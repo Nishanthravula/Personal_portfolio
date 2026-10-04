@@ -18,4 +18,6 @@ Static HTML, CSS and one small script. No build step and no runtime dependencies
 
 The contact form uses Netlify Forms (`name="contact"`).
 
+After editing anything in `assets/`, run `python3 scripts/stamp_assets.py` so browsers load the new version instead of a cached one.
+
 Run locally with any static server, for example `python3 -m http.server`.

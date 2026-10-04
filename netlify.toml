@@ -15,15 +15,17 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Stylesheets and scripts: always revalidate. HTML references them with a
+# content hash (scripts/stamp_assets.py), so a changed file is a new URL.
 [[headers]]
   for = "/assets/*.css"
   [headers.values]
-    Cache-Control = "public, max-age=3600, must-revalidate"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/assets/*.js"
   [headers.values]
-    Cache-Control = "public, max-age=3600, must-revalidate"
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 # Old URLs from the previous template
 [[redirects]]
