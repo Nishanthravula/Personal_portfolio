@@ -31,11 +31,11 @@
 
     <link rel="preload" href="/assets/fonts/literata.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/assets/fonts/plex-cond-500.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/assets/site.css?v=51aafa7d05" />
+    <link rel="stylesheet" href="/assets/site.css?v=abeb0a6311" />
     <script src="/assets/theme.js?v=f7fb3a0456"></script>
     <script src="/assets/signal.js?v=b6990254b2" defer></script>
     <script src="/assets/figures.js?v=03fdc37ce0" defer></script>
-    <script src="/assets/palette.js?v=2e35cfadff" defer></script>
+    <script src="/assets/palette.js?v=8facb3bce0" defer></script>
 
     <script type="application/ld+json">
       {
@@ -67,25 +67,30 @@
   <body>
     <a class="skip" href="#main">Skip to content</a>
 
-    <div class="wrap">
-      <header class="site-head">
+    <header class="site-head">
+      <div class="wrap head-inner">
         <a class="name" href="/">Nishanth Ravula</a>
-        <nav aria-label="Sections">
-          <ul>
-            <li><a href="#research">Research</a></li>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </nav>
-        <div class="tools">
-          <button type="button" id="palette-open" class="ghost" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
-            Jump to <kbd id="palette-key">Ctrl K</kbd>
-          </button>
-          <button type="button" id="theme-toggle" class="ghost">Dark</button>
+        <button type="button" class="menu-btn ghost" id="menu-btn" aria-expanded="false" aria-controls="site-menu">Menu</button>
+        <div class="site-menu" id="site-menu">
+          <nav aria-label="Sections">
+            <ul>
+              <li><a href="#research">Research</a></li>
+              <li><a href="#work">Work</a></li>
+              <li><a href="#experience">Experience</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </nav>
+          <div class="tools">
+            <button type="button" id="palette-open" class="ghost" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+              Search <kbd id="palette-key">Ctrl K</kbd>
+            </button>
+            <button type="button" id="theme-toggle" class="ghost">Dark</button>
+          </div>
         </div>
-      </header>
+      </div>
+    </header>
 
+    <div class="wrap page">
       <main id="main">
         <div class="intro">
           <h1>I teach machines to notice when data stops making sense.</h1>
@@ -98,29 +103,31 @@
             Software Developer at Dollar General. PhD student in Artificial Intelligence. Based in Texas.
           </p>
 
-          <figure class="figure" aria-labelledby="fig1-caption">
+          <figure class="figure wide hero-fig" aria-labelledby="fig1-caption">
             <canvas
               id="signal"
               role="img"
               aria-label="A live line chart of a synthetic, seasonal demand signal. Below it, a bar track shows each point's anomaly score; bars that cross a dashed threshold line are flagged in a contrasting color."
             ></canvas>
+            <div class="fig-controls">
+              <div class="range">
+                <label for="sensitivity">Threshold</label> <output id="sensitivity-value" for="sensitivity">3.5</output>
+                <input type="range" id="sensitivity" min="2" max="6" step="0.1" value="3.5" />
+              </div>
+              <div class="buttons">
+                <button type="button" id="pause" aria-pressed="false">Pause</button>
+                <button type="button" id="inject" class="primary">Inject an anomaly</button>
+              </div>
+            </div>
+            <p id="readout" class="verdict readout"></p>
             <figcaption id="fig1-caption">
               <p>
                 <b>Figure 1.</b> A detector running live in your browser on a synthetic store-demand signal.
                 It learns the seasonal pattern online and scores each point with a robust z-score;
-                anything past the dashed line is flagged. Lower the threshold to catch more and
-                watch false alarms appear; hover the chart to inspect a point. This is the classical baseline my research
-                model, RSTAD, is designed to beat.
-                <span id="readout" class="readout"></span>
+                anything past the dashed line is flagged. Lower the threshold to catch more and watch
+                false alarms appear, or hover or tap the chart to inspect a point. This is the classical
+                baseline my research model, RSTAD, is designed to beat.
               </p>
-              <div class="controls">
-                <div class="range">
-                  <label for="sensitivity">Threshold</label> <output id="sensitivity-value" for="sensitivity">3.5</output>
-                  <input type="range" id="sensitivity" min="2" max="6" step="0.1" value="3.5" />
-                </div>
-                <button type="button" id="pause" aria-pressed="false">Pause</button>
-                <button type="button" id="inject" class="primary">Inject an anomaly</button>
-              </div>
             </figcaption>
           </figure>
         </div>
@@ -638,6 +645,19 @@
           </div>
         </section>
       </main>
+
+      <aside class="rail" aria-label="On this page">
+        <p class="rail-title">On this page</p>
+        <ol>
+          <li><a href="#research">Research</a></li>
+          <li><a href="#work">Selected engineering</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#education">Education</a></li>
+          <li><a href="#skills">Tools</a></li>
+          <li><a href="#earlier">Earlier projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ol>
+      </aside>
 
       <dialog id="palette" aria-labelledby="palette-title">
         <h2 id="palette-title" class="hp">Jump to a section or run an action</h2>
