@@ -58,11 +58,19 @@
   const open = (url) => () => window.open(url, "_blank", "noopener");
 
   const ITEMS = [
+    {
+      group: "Play",
+      label: "Spot the anomaly: you vs. the detector",
+      hint: "30 seconds",
+      run: () => document.dispatchEvent(new Event("start-game")),
+    },
+    { group: "Play", label: "Fairness challenge", hint: "3 levels", run: go("fig-fair") },
     { group: "Figures", label: "Live anomaly detector", hint: "Figure 1", run: go("main") },
     { group: "Figures", label: "RSTAD dual-branch scoring", hint: "Figure 2", run: go("fig-rstad") },
     { group: "Figures", label: "Fairness threshold explorer", hint: "Figure 3", run: go("fig-fair") },
     { group: "Figures", label: "Secret redaction playground", hint: "Figure 4", run: go("fig-guard") },
     { group: "Figures", label: "Trace a request through the analytical layer", hint: "Figure 5", run: go("fig-serve") },
+    { group: "Sections", label: "Play", run: go("play") },
     { group: "Sections", label: "Research", run: go("research") },
     { group: "Sections", label: "Selected engineering", run: go("work") },
     { group: "Sections", label: "Experience", run: go("experience") },

@@ -10,6 +10,7 @@ Static HTML, CSS and one small script. No build step and no runtime dependencies
 | `assets/site.css` | Styles, light and dark themes |
 | `assets/signal.js` | Figure 1: a live seasonal robust z-score anomaly detector drawn on a canvas |
 | `assets/figures.js` | Figures 2 to 5: RSTAD scoring explorer, fairness thresholds, secret redaction, request tracing |
+| `assets/game.js` | Spot the anomaly: a 30-second game against the Figure 1 detector |
 | `assets/palette.js` | Command palette (Ctrl/Cmd K or `/`) and the theme switch |
 | `assets/theme.js` | Applies a saved theme before first paint |
 | `assets/fonts/` | Self-hosted Literata and IBM Plex Sans Condensed |

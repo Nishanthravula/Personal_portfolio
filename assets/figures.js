@@ -311,52 +311,126 @@
   });
 
   // ---------------------------------------------------------------------------
-  // Figure 3. Fairness: one threshold vs equal opportunity
+  // Figure 3. Fairness: threshold policies and a three-level challenge
   // ---------------------------------------------------------------------------
   safely(() => {
     const canvas = document.getElementById("fair-plot");
     if (!canvas) return;
-    const thrInput = document.getElementById("fair-threshold");
-    const thrOut = document.getElementById("fair-threshold-value");
-    const eoBtn = document.getElementById("fair-eo");
-    const table = document.getElementById("fair-table");
-    const summary = document.getElementById("fair-summary");
+    const $ = (id) => document.getElementById(id);
+    const thrA = $("fair-threshold");
+    const thrAOut = $("fair-threshold-value");
+    const thrALabel = $("fair-a-label");
+    const thrB = $("fair-threshold-b");
+    const thrBOut = $("fair-threshold-b-value");
+    const bWrap = $("fair-b-wrap");
+    const policyBtns = document.querySelectorAll("#fig-fair [data-policy]");
+    const table = $("fair-table");
+    const summary = $("fair-summary");
+    const ui = {
+      label: $("fair-level-label"),
+      pips: [...document.querySelectorAll("#fair-pips li")],
+      goal: $("fair-goal"),
+      checks: $("fair-checks"),
+      next: $("fair-next"),
+      why: $("fair-why"),
+      restart: $("fair-restart"),
+      reveal: $("fair-reveal"),
+    };
 
-    // Synthetic risk scores. Group B's scores are shifted up for both outcomes:
-    // the model over-scores that group, the pattern the audit was looking for.
+    // Synthetic risk scores. The model over-scores Group B, more for people who did not reoffend.
     const G = {
       A: { neg: [0.36, 0.12], pos: [0.62, 0.12], base: 0.4 },
-      B: { neg: [0.48, 0.12], pos: [0.7, 0.11], base: 0.5 },
+      B: { neg: [0.5, 0.12], pos: [0.7, 0.11], base: 0.5 },
     };
-    let eo = false;
+    let policy = "shared";
 
     const erf = (x) => {
       // Abramowitz and Stegun 7.1.26
-      const s = Math.sign(x);
+      const sg = Math.sign(x);
       x = Math.abs(x);
       const t = 1 / (1 + 0.3275911 * x);
       const y = 1 - ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
-      return s * y;
+      return sg * y;
     };
-    const cdf = (x, [m, s]) => 0.5 * (1 + erf((x - m) / (s * Math.SQRT2)));
-    const pdf = (x, [m, s]) => Math.exp(-0.5 * ((x - m) / s) ** 2) / (s * Math.sqrt(2 * Math.PI));
-
-    function rates(g, t) {
+    const cdf = (x, [m, sd]) => 0.5 * (1 + erf((x - m) / (sd * Math.SQRT2)));
+    const pdf = (x, [m, sd]) => Math.exp(-0.5 * ((x - m) / sd) ** 2) / (sd * Math.sqrt(2 * Math.PI));
+    const rates = (g, t) => {
       const tpr = 1 - cdf(t, g.pos);
       const fpr = 1 - cdf(t, g.neg);
-      const acc = g.base * tpr + (1 - g.base) * (1 - fpr);
-      return { tpr, fpr, acc };
-    }
+      return { tpr, fpr, acc: g.base * tpr + (1 - g.base) * (1 - fpr) };
+    };
 
     function thresholds() {
-      const tA = Number(thrInput.value);
-      if (!eo) return { A: tA, B: tA };
-      // Equal opportunity: choose B's threshold so its true positive rate matches A's.
+      const tA = Number(thrA.value);
+      if (policy === "shared") return { A: tA, B: tA };
+      if (policy === "manual") return { A: tA, B: Number(thrB.value) };
+      // Equal opportunity: B's threshold that gives the same true positive rate as A.
       const z = (tA - G.A.pos[0]) / G.A.pos[1];
       return { A: tA, B: G.B.pos[0] + z * G.B.pos[1] };
     }
 
     const pct = (v) => `${(v * 100).toFixed(1)}%`;
+    const pts = (v) => `${(v * 100).toFixed(1)} points`;
+
+    // ---- challenge levels ----
+    const LEVELS = [
+      {
+        goal: "A regulator says Group B is wrongly flagged far too often. With one shared threshold, bring Group B's false positive rate under 15% while overall accuracy stays at 77% or better.",
+        checks: (m) => [
+          ["Using one shared threshold", m.policy === "shared"],
+          [`Group B false positive rate under 15% (now ${pct(m.b.fpr)})`, m.b.fpr < 0.15],
+          [`Overall accuracy 77% or better (now ${pct(m.acc)})`, m.acc >= 0.77],
+        ],
+      },
+      {
+        goal: "People who do reoffend should be caught equally often in both groups. Get the true positive rates within 1 point of each other, with each group's accuracy at least 75%.",
+        checks: (m) => [
+          [`True positive rates within 1 point (gap ${pts(m.tprGap)})`, m.tprGap < 0.01],
+          [`Group A accuracy at least 75% (now ${pct(m.a.acc)})`, m.a.acc >= 0.75],
+          [`Group B accuracy at least 75% (now ${pct(m.b.acc)})`, m.b.acc >= 0.75],
+        ],
+      },
+      {
+        goal: "Final challenge: be fair on every metric at once. True positive rates and false positive rates both within 1 point, and each group's accuracy at least 70%. Use “Set each group” to move both thresholds.",
+        checks: (m) => [
+          [`True positive rates within 1 point (gap ${pts(m.tprGap)})`, m.tprGap < 0.01],
+          [`False positive rates within 1 point (gap ${pts(m.fprGap)})`, m.fprGap < 0.01],
+          [`Each group's accuracy at least 70%`, m.a.acc >= 0.7 && m.b.acc >= 0.7],
+        ],
+        impossible: true,
+      },
+    ];
+    let level = 0;
+    let attempts = 0;
+    let revealed = false;
+    const solved = [false, false, false];
+
+    function setPolicy(p) {
+      policy = p;
+      policyBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.policy === p)));
+      bWrap.hidden = p !== "manual";
+      thrALabel.textContent = p === "shared" ? "Decision threshold" : "Group A threshold";
+      if (p === "manual") {
+        thrB.value = thresholds().A.toFixed(2);
+        thrB.dispatchEvent(new Event("input"));
+      }
+    }
+
+    function showLevel(i) {
+      level = i;
+      attempts = 0;
+      revealed = false;
+      ui.label.textContent = `Challenge ${i + 1} of ${LEVELS.length}`;
+      ui.goal.textContent = LEVELS[i].goal;
+      ui.next.hidden = true;
+      ui.why.hidden = true;
+      ui.restart.hidden = true;
+      ui.reveal.hidden = true;
+      ui.pips.forEach((li, k) => {
+        li.classList.toggle("done", solved[k]);
+        li.classList.toggle("current", k === i);
+      });
+    }
 
     const redraw = canvasFigure(canvas, (ctx, w, h, c) => {
       const t = thresholds();
@@ -366,7 +440,7 @@
         const g = G[name];
         const top = r * (rowH + 12) + 18;
         const base = top + rowH - 18;
-        const peak = 3.6;
+        const peak = 3.7;
         const sy = (d) => base - (d / peak) * (rowH - 26);
 
         ctx.strokeStyle = c.grid;
@@ -375,28 +449,22 @@
         ctx.lineTo(w, base + 0.5);
         ctx.stroke();
 
-        const curve = (params, color, fillRight) => {
+        const curve = (params, color, fill) => {
           ctx.beginPath();
           for (let i = 0; i <= 200; i++) {
             const v = i / 200;
-            const X = sx(v);
-            const Y = sy(pdf(v, params));
-            if (i === 0) ctx.moveTo(X, Y);
-            else ctx.lineTo(X, Y);
+            if (i === 0) ctx.moveTo(sx(v), sy(pdf(v, params)));
+            else ctx.lineTo(sx(v), sy(pdf(v, params)));
           }
           ctx.strokeStyle = color;
           ctx.lineWidth = 1.6;
           ctx.stroke();
-          // shade the area above the threshold (predicted positive)
           ctx.beginPath();
           ctx.moveTo(sx(t[name]), base);
-          for (let i = Math.ceil(t[name] * 200); i <= 200; i++) {
-            const v = i / 200;
-            ctx.lineTo(sx(v), sy(pdf(v, params)));
-          }
+          for (let i = Math.ceil(t[name] * 200); i <= 200; i++) ctx.lineTo(sx(i / 200), sy(pdf(i / 200, params)));
           ctx.lineTo(sx(1), base);
           ctx.closePath();
-          ctx.fillStyle = fillRight;
+          ctx.fillStyle = fill;
           ctx.globalAlpha = 0.22;
           ctx.fill();
           ctx.globalAlpha = 1;
@@ -416,35 +484,97 @@
         const lab = `threshold ${t[name].toFixed(2)}`;
         ctx.font = `500 12px ${c.ui}`;
         const lw = ctx.measureText(lab).width;
-        smallLabel(ctx, c, lab, Math.min(tx + 6, w - lw), top - 16);
+        smallLabel(ctx, c, lab, Math.min(Math.max(tx + 6, 70), w - lw), top - 16);
       });
     });
 
-    function render() {
+    function render(fromUser) {
       const t = thresholds();
       const a = rates(G.A, t.A);
       const b = rates(G.B, t.B);
-      thrOut.textContent = Number(thrInput.value).toFixed(2);
+      const m = {
+        policy,
+        a,
+        b,
+        acc: (a.acc + b.acc) / 2,
+        tprGap: Math.abs(a.tpr - b.tpr),
+        fprGap: Math.abs(a.fpr - b.fpr),
+      };
+      thrAOut.textContent = t.A.toFixed(2);
+      thrBOut.textContent = Number(thrB.value).toFixed(2);
       table.innerHTML = `
         <tr><th scope="col"></th><th scope="col">True positive rate</th><th scope="col">False positive rate</th><th scope="col">Accuracy</th></tr>
         <tr><th scope="row">Group A</th><td>${pct(a.tpr)}</td><td>${pct(a.fpr)}</td><td>${pct(a.acc)}</td></tr>
         <tr><th scope="row">Group B</th><td>${pct(b.tpr)}</td><td>${pct(b.fpr)}</td><td>${pct(b.acc)}</td></tr>`;
-      const tprGap = Math.abs(a.tpr - b.tpr);
-      const fprGap = Math.abs(a.fpr - b.fpr);
-      summary.innerHTML = eo
-        ? `Equal opportunity is on. True positive rates now match; the false positive gap is <b>${(fprGap * 100).toFixed(1)} points</b>.`
-        : `With one shared threshold, Group B is wrongly flagged <b>${(fprGap * 100).toFixed(1)} points</b> more often, and the true positive gap is ${(tprGap * 100).toFixed(1)} points.`;
-      eoBtn.textContent = eo ? "Use one shared threshold" : "Apply equal opportunity";
-      eoBtn.setAttribute("aria-pressed", String(eo));
+      summary.innerHTML =
+        policy === "shared"
+          ? `With one shared threshold, Group B is wrongly flagged <b>${pts(b.fpr - a.fpr)}</b> more often than Group A.`
+          : policy === "eo"
+            ? `Equal opportunity sets Group B's threshold to ${t.B.toFixed(2)} so true positive rates match. The false positive gap is now <b>${pts(m.fprGap)}</b>.`
+            : `True positive gap <b>${pts(m.tprGap)}</b>, false positive gap <b>${pts(m.fprGap)}</b>.`;
+
+      // challenge
+      const L = LEVELS[level];
+      const checks = L.checks(m);
+      ui.checks.innerHTML = "";
+      checks.forEach(([text, ok]) => {
+        const li = document.createElement("li");
+        li.className = ok ? "ok" : "";
+        li.textContent = text;
+        const sr = document.createElement("span");
+        sr.className = "hp";
+        sr.textContent = ok ? " (met)" : " (not met)";
+        li.append(sr);
+        ui.checks.append(li);
+      });
+      const done = checks.every(([, ok]) => ok);
+      if (done && !L.impossible) {
+        solved[level] = true;
+        ui.pips[level].classList.add("done");
+        ui.next.hidden = false;
+      }
+      if (fromUser && L.impossible) attempts++;
+      if (L.impossible && !revealed && attempts >= 6) ui.why.hidden = false;
       redraw();
     }
 
-    thrInput.addEventListener("input", render);
-    eoBtn.addEventListener("click", () => {
-      eo = !eo;
-      render();
+    thrA.addEventListener("input", () => render(true));
+    thrB.addEventListener("input", () => render(true));
+    policyBtns.forEach((btn) =>
+      btn.addEventListener("click", () => {
+        setPolicy(btn.dataset.policy);
+        render(true);
+      })
+    );
+    ui.next.addEventListener("click", () => {
+      showLevel(level + 1);
+      if (level === 2) setPolicy("manual");
+      render(false);
+      ui.goal.focus?.();
     });
-    render();
+    ui.why.addEventListener("click", () => {
+      revealed = true;
+      solved[2] = true;
+      ui.pips[2].classList.add("done");
+      ui.reveal.hidden = false;
+      ui.why.hidden = true;
+      ui.restart.hidden = false;
+    });
+    ui.restart.addEventListener("click", () => {
+      solved.fill(false);
+      thrA.value = "0.55";
+      thrA.dispatchEvent(new Event("input"));
+      setPolicy("shared");
+      showLevel(0);
+      render(false);
+    });
+    document.addEventListener("start-challenge", () => {
+      document.getElementById("fig-fair")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    setPolicy("shared");
+    showLevel(0);
+    render(false);
   });
 
   // ---------------------------------------------------------------------------

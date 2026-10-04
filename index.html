@@ -31,11 +31,12 @@
 
     <link rel="preload" href="/assets/fonts/literata.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/assets/fonts/plex-cond-500.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/assets/site.css?v=abeb0a6311" />
+    <link rel="stylesheet" href="/assets/site.css?v=42378f9a49" />
     <script src="/assets/theme.js?v=f7fb3a0456"></script>
     <script src="/assets/signal.js?v=b6990254b2" defer></script>
-    <script src="/assets/figures.js?v=03fdc37ce0" defer></script>
-    <script src="/assets/palette.js?v=8facb3bce0" defer></script>
+    <script src="/assets/figures.js?v=f56e5bec26" defer></script>
+    <script src="/assets/game.js?v=3a4a23a422" defer></script>
+    <script src="/assets/palette.js?v=92b2007b8c" defer></script>
 
     <script type="application/ld+json">
       {
@@ -74,6 +75,7 @@
         <div class="site-menu" id="site-menu">
           <nav aria-label="Sections">
             <ul>
+              <li><a href="#play">Play</a></li>
               <li><a href="#research">Research</a></li>
               <li><a href="#work">Work</a></li>
               <li><a href="#experience">Experience</a></li>
@@ -131,6 +133,52 @@
             </figcaption>
           </figure>
         </div>
+
+
+        <section id="play" aria-labelledby="play-title">
+          <h2 class="section-title" id="play-title">Can you beat my detector?</h2>
+          <p class="section-lede">
+            Thirty seconds of live data. Tap the chart or press Space the moment something looks wrong.
+            My anomaly detector watches the same stream, and you are both scored at the end.
+          </p>
+
+          <figure class="figure game" id="game" aria-labelledby="game-cap">
+            <div class="hud">
+              <span>Time left <b id="hud-time">30.0</b></span>
+              <span>Caught <b id="hud-caught">0</b></span>
+              <span>False alarms <b id="hud-false">0</b></span>
+              <span>Your best F1 <b id="hud-best">–</b></span>
+            </div>
+            <div class="game-stage" id="game-stage">
+              <canvas id="game-canvas" tabindex="-1"
+                aria-label="Game area. A demand signal scrolls from right to left. Tap or press Space when you see an anomaly."></canvas>
+              <div class="game-start" id="game-start">
+                <p class="game-title">Spot the anomaly</p>
+                <p class="game-rules">Watch for spikes, drops, level shifts, a stuck sensor and a missing daily peak. Tap within a second or two of seeing one; random taps count as false alarms.</p>
+                <button type="button" class="primary" id="game-play">Start a 30-second round</button>
+              </div>
+            </div>
+            <div class="game-results" id="game-results" hidden>
+              <p class="game-title" id="result-title"></p>
+              <div class="table-scroll"><table class="data" id="result-table" aria-label="Your score and the detector's score"></table></div>
+              <p class="verdict" id="result-note"></p>
+              <div class="fig-controls">
+                <div class="buttons">
+                  <button type="button" class="primary" id="game-again">Play again</button>
+                  <button type="button" id="game-share">Share score</button>
+                </div>
+              </div>
+            </div>
+            <p id="game-feed" class="hp" aria-live="polite"></p>
+            <figcaption id="game-cap">
+              <p>
+                <b>Game.</b> The stream is synthetic and different every round, and the anomalies get
+                subtler as the clock runs down. The detector is the robust z-score from Figure 1. F1 balances
+                catches against false alarms, so tapping constantly will not win.
+              </p>
+            </figcaption>
+          </figure>
+        </section>
 
         <section id="research" aria-labelledby="research-title">
           <h2 class="section-title" id="research-title">Research</h2>
@@ -282,14 +330,49 @@
             </div>
 
             <figure class="figure wide" id="fig-fair" aria-labelledby="fig3-cap">
+              <div class="challenge" id="fair-challenge">
+                <div class="challenge-head">
+                  <span id="fair-level-label">Challenge 1 of 3</span>
+                  <ol class="pips" id="fair-pips" aria-hidden="true"><li></li><li></li><li></li></ol>
+                </div>
+                <p class="challenge-goal" id="fair-goal"></p>
+                <ul class="checks" id="fair-checks" aria-live="polite"></ul>
+                <div class="challenge-actions">
+                  <button type="button" class="primary" id="fair-next" hidden>Next challenge</button>
+                  <button type="button" id="fair-why" hidden>Is this even possible?</button>
+                  <button type="button" class="ghost" id="fair-restart" hidden>Start over</button>
+                </div>
+                <div class="reveal" id="fair-reveal" hidden>
+                  <p>
+                    <b>There is no answer.</b> When two groups have different base rates and a model scores them
+                    differently, no pair of thresholds equalizes true positive rates and false positive rates at
+                    the same time while keeping the model useful. Here the closest you can get is about two
+                    points apart.
+                  </p>
+                  <p>
+                    This is the impossibility result of Kleinberg, Mullainathan and Raghavan (2016) and
+                    Chouldechova (2017). It is why the recidivism audit had to argue for which kind of fairness
+                    matters for that decision, rather than claim to satisfy them all.
+                  </p>
+                </div>
+              </div>
+
               <canvas id="fair-plot" role="img"
-                aria-label="Score distributions for two groups. For each group, one curve shows people who did not reoffend and one shows people who did. A vertical line marks the decision threshold."></canvas>
+                aria-label="Score distributions for two groups. For each group, one curve shows people who did not reoffend and one shows people who did. A vertical line marks each group's decision threshold."></canvas>
+              <div class="seg policy" role="group" aria-label="Threshold policy">
+                <button type="button" data-policy="shared" aria-pressed="true">One threshold</button>
+                <button type="button" data-policy="eo" aria-pressed="false">Equal opportunity</button>
+                <button type="button" data-policy="manual" aria-pressed="false">Set each group</button>
+              </div>
               <div class="fig-controls">
                 <div class="range">
-                  <label for="fair-threshold">Decision threshold</label> <output id="fair-threshold-value" for="fair-threshold">0.55</output>
+                  <label for="fair-threshold" id="fair-a-label">Decision threshold</label> <output id="fair-threshold-value" for="fair-threshold">0.55</output>
                   <input type="range" id="fair-threshold" min="0.2" max="0.85" step="0.01" value="0.55" />
                 </div>
-                <button type="button" id="fair-eo" class="primary" aria-pressed="false">Apply equal opportunity</button>
+                <div class="range" id="fair-b-wrap" hidden>
+                  <label for="fair-threshold-b">Group B threshold</label> <output id="fair-threshold-b-value" for="fair-threshold-b">0.55</output>
+                  <input type="range" id="fair-threshold-b" min="0.2" max="0.85" step="0.01" value="0.55" />
+                </div>
               </div>
               <div class="table-scroll">
                 <table class="data" id="fair-table" aria-label="Error rates by group"></table>
@@ -298,10 +381,8 @@
               <figcaption id="fig3-cap">
                 <p>
                   <b>Figure 3.</b> The trade-off at the center of the recidivism audit, on synthetic scores.
-                  Grey curves are people who did not reoffend, blue are people who did; shaded area is who
-                  gets flagged. One shared threshold produces unequal error rates when a model over-scores
-                  one group. No single setting can equalize every rate at once, which is the impossibility
-                  result the audit had to argue through.
+                  Grey curves are people who did not reoffend, blue are people who did; the shaded area is who
+                  gets flagged. Work through the three challenges to see why fairness is a choice, not a setting.
                 </p>
               </figcaption>
             </figure>
@@ -649,6 +730,7 @@
       <aside class="rail" aria-label="On this page">
         <p class="rail-title">On this page</p>
         <ol>
+          <li><a href="#play">Play</a></li>
           <li><a href="#research">Research</a></li>
           <li><a href="#work">Selected engineering</a></li>
           <li><a href="#experience">Experience</a></li>
