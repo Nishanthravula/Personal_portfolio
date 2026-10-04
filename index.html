@@ -32,7 +32,10 @@
     <link rel="preload" href="/assets/fonts/literata.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/assets/fonts/plex-cond-500.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/assets/site.css" />
+    <script src="/assets/theme.js"></script>
     <script src="/assets/signal.js" defer></script>
+    <script src="/assets/figures.js" defer></script>
+    <script src="/assets/palette.js" defer></script>
 
     <script type="application/ld+json">
       {
@@ -75,6 +78,12 @@
             <li><a href="#contact">Contact</a></li>
           </ul>
         </nav>
+        <div class="tools">
+          <button type="button" id="palette-open" class="ghost" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K">
+            Jump to <kbd id="palette-key">Ctrl K</kbd>
+          </button>
+          <button type="button" id="theme-toggle" class="ghost">Dark</button>
+        </div>
       </header>
 
       <main id="main">
@@ -99,11 +108,16 @@
               <p>
                 <b>Figure 1.</b> A detector running live in your browser on a synthetic store-demand signal.
                 It learns the seasonal pattern online and scores each point with a robust z-score;
-                anything past the dashed line is flagged. This is the classical baseline my research
+                anything past the dashed line is flagged. Lower the threshold to catch more and
+                watch false alarms appear; hover the chart to inspect a point. This is the classical baseline my research
                 model, RSTAD, is designed to beat.
                 <span id="readout" class="readout"></span>
               </p>
               <div class="controls">
+                <div class="range">
+                  <label for="sensitivity">Threshold</label> <output id="sensitivity-value" for="sensitivity">3.5</output>
+                  <input type="range" id="sensitivity" min="2" max="6" step="0.1" value="3.5" />
+                </div>
                 <button type="button" id="pause" aria-pressed="false">Pause</button>
                 <button type="button" id="inject" class="primary">Inject an anomaly</button>
               </div>
@@ -140,6 +154,49 @@
               </p>
               <p class="stack">PyTorch, MLflow, Transformer masked autoencoders, kNN density estimation</p>
             </div>
+
+            <figure class="figure wide" id="fig-rstad" aria-labelledby="fig2-cap">
+              <div class="fig-split">
+                <canvas id="rstad-series" class="fig-series" role="img"
+                  aria-label="A time-series window divided into twelve patches. Masked patches are shaded and show the decoder's reconstruction as a dashed line. One patch contains a sharp dip."></canvas>
+                <canvas id="rstad-latent" class="fig-latent" role="img"
+                  aria-label="A scatter plot of the latent memory bank of normal windows, with the current window's embedding linked to its five nearest neighbors."></canvas>
+              </div>
+              <div class="fig-controls">
+                <div class="range">
+                  <label for="rstad-mask">Mask ratio</label> <output id="rstad-mask-value" for="rstad-mask">35%</output>
+                  <input type="range" id="rstad-mask" min="0.1" max="0.75" step="0.05" value="0.35" />
+                </div>
+                <label class="check"><input type="checkbox" id="rstad-anomaly" checked /> Anomaly in the window</label>
+                <label class="check"><input type="checkbox" id="rstad-overgen" /> Decoder over-generalizes</label>
+              </div>
+              <div class="bars">
+                <div class="bar" id="rstad-recon">
+                  <span class="bar-label">Reconstruction branch</span>
+                  <span class="bar-track"><span class="bar-fill"></span><span class="bar-thresh"></span></span>
+                  <span class="bar-value"></span>
+                </div>
+                <div class="bar" id="rstad-latent-score">
+                  <span class="bar-label">Latent kNN branch</span>
+                  <span class="bar-track"><span class="bar-fill"></span><span class="bar-thresh"></span></span>
+                  <span class="bar-value"></span>
+                </div>
+                <div class="bar combined" id="rstad-combined">
+                  <span class="bar-label">RSTAD score</span>
+                  <span class="bar-track"><span class="bar-fill"></span><span class="bar-thresh"></span></span>
+                  <span class="bar-value"></span>
+                </div>
+              </div>
+              <p id="rstad-verdict" class="verdict" aria-live="polite"></p>
+              <figcaption id="fig2-cap">
+                <p>
+                  <b>Figure 2.</b> How RSTAD scores a window, on synthetic data. Turn on
+                  <i>Decoder over-generalizes</i>: the reconstruction branch goes quiet because the decoder
+                  reproduces the anomaly, but the window's embedding still sits far from every normal
+                  pattern in memory. The vertical tick on each bar is the alert threshold.
+                </p>
+              </figcaption>
+            </figure>
           </article>
 
           <article class="entry">
@@ -216,6 +273,31 @@
               </table>
               <p class="stack">What-If Tool, counterfactual analysis, EqualAI AIA, EU AI Act, GDPR, NIST AI RMF</p>
             </div>
+
+            <figure class="figure wide" id="fig-fair" aria-labelledby="fig3-cap">
+              <canvas id="fair-plot" role="img"
+                aria-label="Score distributions for two groups. For each group, one curve shows people who did not reoffend and one shows people who did. A vertical line marks the decision threshold."></canvas>
+              <div class="fig-controls">
+                <div class="range">
+                  <label for="fair-threshold">Decision threshold</label> <output id="fair-threshold-value" for="fair-threshold">0.55</output>
+                  <input type="range" id="fair-threshold" min="0.2" max="0.85" step="0.01" value="0.55" />
+                </div>
+                <button type="button" id="fair-eo" class="primary" aria-pressed="false">Apply equal opportunity</button>
+              </div>
+              <div class="table-scroll">
+                <table class="data" id="fair-table" aria-label="Error rates by group"></table>
+              </div>
+              <p id="fair-summary" class="verdict" aria-live="polite"></p>
+              <figcaption id="fig3-cap">
+                <p>
+                  <b>Figure 3.</b> The trade-off at the center of the recidivism audit, on synthetic scores.
+                  Grey curves are people who did not reoffend, blue are people who did; shaded area is who
+                  gets flagged. One shared threshold produces unequal error rates when a model over-scores
+                  one group. No single setting can equalize every rate at once, which is the impossibility
+                  result the audit had to argue through.
+                </p>
+              </figcaption>
+            </figure>
           </article>
         </section>
 
@@ -238,6 +320,40 @@
               </p>
               <p class="stack">TypeScript, Model Context Protocol, stdio proxy, CLI, test suite with CI</p>
             </div>
+
+            <figure class="figure wide" id="fig-guard" aria-labelledby="fig4-cap">
+              <div class="guard">
+                <div>
+                  <label for="guard-in">Tool result from an MCP server. Edit it.</label>
+                  <textarea id="guard-in" spellcheck="false" autocapitalize="off" autocomplete="off">{
+  "tool": "crm.lookup_customer",
+  "result": {
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com",
+    "phone": "(555) 010-4477",
+    "card_on_file": "4242 4242 4242 4242",
+    "notes": "Rotated deploy key AKIAIOSFODNN7EXAMPLE yesterday",
+    "headers": {
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqYW5lIn0.c2lnbmF0dXJlLWhlcmU"
+    },
+    "db": { "user": "svc_reports", "password": "hunter2-prod" }
+  }
+}</textarea>
+                </div>
+                <div>
+                  <span class="pane-label" id="guard-out-label">What the model receives</span>
+                  <pre id="guard-out" aria-labelledby="guard-out-label" tabindex="0"></pre>
+                </div>
+              </div>
+              <p id="guard-counts" class="verdict" aria-live="polite"></p>
+              <figcaption id="fig4-cap">
+                <p>
+                  <b>Figure 4.</b> A simplified version of the guardrail's redaction pass, running in your
+                  browser. It catches cloud keys, tokens, JWTs, passwords, emails, phone numbers and card
+                  numbers that pass a Luhn check. Nothing you type leaves this page.
+                </p>
+              </figcaption>
+            </figure>
           </article>
 
           <article class="entry">
@@ -254,6 +370,65 @@
               </p>
               <p class="stack">DuckDB, Parquet, FastAPI, Locust, asyncio</p>
             </div>
+
+            <figure class="figure wide" id="fig-serve" aria-labelledby="fig5-cap">
+              <div class="seg" role="group" aria-label="Design to trace">
+                <button type="button" data-mode="before" aria-pressed="false">Before: scan Parquet per request</button>
+                <button type="button" data-mode="after" aria-pressed="true">After: query a snapshot</button>
+              </div>
+              <ol class="hops" data-path="before">
+                <li data-log="The dashboard asks the API for one store's orders.">
+                  <b>Dashboard</b><span>requests a store's orders</span>
+                </li>
+                <li data-log="FastAPI validates the parameters and builds the query.">
+                  <b>FastAPI</b><span>validates and builds the query</span>
+                </li>
+                <li data-log="The API globs Parquet partitions by site, date and vendor and scans them. This work repeats on every request and grows with the data.">
+                  <b>Parquet scan</b><span>reads partitions on every call</span>
+                </li>
+                <li data-log="Rows are returned after the scan finishes."
+                  data-end="Every request paid for a full partition scan. Load on storage grows with traffic.">
+                  <b>Response</b><span>after the scan</span>
+                </li>
+              </ol>
+              <ol class="hops" data-path="after" hidden>
+                <li data-log="The dashboard asks the API for one store's orders.">
+                  <b>Dashboard</b><span>requests a store's orders</span>
+                </li>
+                <li data-log="FastAPI validates the parameters and passes them to the query service.">
+                  <b>FastAPI</b><span>validates the request</span>
+                </li>
+                <li data-log="The query service reads the manifest to find the current snapshot version.">
+                  <b>Query service</b><span>picks the live snapshot</span>
+                </li>
+                <li data-log="DuckDB answers from a pre-built, columnar snapshot. No Parquet is scanned at request time.">
+                  <b>DuckDB snapshot</b><span>pre-built and versioned</span>
+                </li>
+                <li data-log="Rows are returned straight from the snapshot."
+                  data-end="The expensive work moved offline. Requests only touch the snapshot, and a refresh swaps versions without downtime.">
+                  <b>Response</b><span>from the snapshot</span>
+                </li>
+              </ol>
+              <div class="pipeline">
+                <span class="pane-label">Built offline, on a schedule</span>
+                <ol>
+                  <li>Partitioned Parquet</li>
+                  <li>Snapshot build</li>
+                  <li>Manifest</li>
+                  <li>Promote new version</li>
+                </ol>
+              </div>
+              <div class="fig-controls">
+                <button type="button" id="serve-trace" class="primary">Trace a request</button>
+              </div>
+              <p id="serve-log" class="verdict" aria-live="polite"></p>
+              <figcaption id="fig5-cap">
+                <p>
+                  <b>Figure 5.</b> The design change behind the analytical layer: move scanning out of the
+                  request path. Switch designs and trace a request to see where the work happens.
+                </p>
+              </figcaption>
+            </figure>
           </article>
 
           <article class="entry">
@@ -464,9 +639,17 @@
         </section>
       </main>
 
+      <dialog id="palette" aria-labelledby="palette-title">
+        <h2 id="palette-title" class="hp">Jump to a section or run an action</h2>
+        <input id="palette-input" type="text" role="combobox" aria-controls="palette-list" aria-expanded="true"
+          aria-autocomplete="list" placeholder="Search sections, figures and actions" autocomplete="off" spellcheck="false" />
+        <ul id="palette-list" role="listbox" aria-label="Results"></ul>
+        <p class="palette-hint">Arrow keys to move, Enter to open, Esc to close</p>
+      </dialog>
+
       <footer class="site-foot">
         <span>© 2026 Nishanth Ravula</span>
-        <span>Hand-built, no frameworks. <a href="https://github.com/Nishanthravula/Personal_portfolio">Source</a></span>
+        <span>Hand-built, no frameworks. Press <kbd>/</kbd> to jump anywhere. <a href="https://github.com/Nishanthravula/Personal_portfolio">Source</a></span>
       </footer>
     </div>
   </body>

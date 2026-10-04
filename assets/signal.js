@@ -14,13 +14,16 @@
   const injectBtn = document.getElementById("inject");
   const pauseBtn = document.getElementById("pause");
   const readout = document.getElementById("readout");
+  const slider = document.getElementById("sensitivity");
+  const sliderOut = document.getElementById("sensitivity-value");
+  let hover = -1; // index of the hovered point, or -1
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const PERIOD = 48; // points per seasonal cycle
   const WINDOW = 200; // points visible
   const RESID_WINDOW = 144;
-  const THRESHOLD = 3.5;
+  let threshold = 3.5;
   const STEP_MS = 110;
 
   // Deterministic PRNG so the first frame always looks the same.
@@ -43,8 +46,6 @@
   let profileReady = 0;
   const resid = [];
   const points = []; // { v, z, hit }
-  let seen = 0;
-  let flagged = 0;
 
   function truth(i) {
     const s = (2 * Math.PI * i) / PERIOD;
@@ -85,7 +86,7 @@
         const med = median(resid);
         const mad = median(resid.map((x) => Math.abs(x - med))) || 1e-6;
         z = (0.6745 * (r - med)) / mad;
-        hit = Math.abs(z) > THRESHOLD;
+        hit = Math.abs(z) > threshold;
       }
       if (!hit) {
         profile[phase] = 0.75 * profile[phase] + 0.25 * v;
@@ -97,10 +98,6 @@
     points.push({ v, z, hit });
     if (points.length > WINDOW + 1) points.shift();
     t++;
-    if (t > PERIOD * 2) {
-      seen++;
-      if (hit) flagged++;
-    }
   }
 
   // Warm up: two seasons of history so the detector is calibrated on first paint.
@@ -208,7 +205,7 @@
     ctx.fillStyle = c.anomaly;
     ctx.lineWidth = 1.5;
     points.forEach((p, i) => {
-      if (!p.hit) return;
+      if (Math.abs(p.z) <= threshold) return;
       const px = x(i);
       const py = y(p.v);
       ctx.beginPath();
@@ -227,8 +224,9 @@
     const by = (z) => botY + botH - Math.min(Math.abs(z), zMax) / zMax * botH;
     const barW = Math.max(1, dx * 0.55);
     points.forEach((p, i) => {
-      ctx.fillStyle = p.hit ? c.anomaly : c.muted;
-      ctx.globalAlpha = p.hit ? 1 : 0.45;
+      const on = Math.abs(p.z) > threshold;
+      ctx.fillStyle = on ? c.anomaly : c.muted;
+      ctx.globalAlpha = on ? 1 : 0.45;
       const top = by(p.z);
       ctx.fillRect(x(i) - barW / 2, top, barW, botY + botH - top);
     });
@@ -242,7 +240,7 @@
     ctx.lineTo(W, botY + botH - 0.5);
     ctx.stroke();
 
-    const ty = Math.round(by(THRESHOLD)) + 0.5;
+    const ty = Math.round(by(threshold)) + 0.5;
     ctx.strokeStyle = c.ink;
     ctx.globalAlpha = 0.55;
     ctx.setLineDash([4, 4]);
@@ -265,13 +263,39 @@
     };
     label("Units sold per hour", 0, 0);
     label("Anomaly score |z|", 0, botY);
-    const thr = `threshold ${THRESHOLD}`;
+    const thr = `threshold ${threshold.toFixed(1)}`;
     label(thr, W - ctx.measureText(thr).width - 4, ty - 17);
+
+    // hover crosshair with a readout of value and score
+    if (hover >= 0 && hover < points.length) {
+      const p = points[hover];
+      const hx = Math.round(x(hover)) + 0.5;
+      ctx.strokeStyle = c.ink;
+      ctx.globalAlpha = 0.4;
+      ctx.beginPath();
+      ctx.moveTo(hx, 0);
+      ctx.lineTo(hx, H);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = c.ink;
+      ctx.beginPath();
+      ctx.arc(hx, y(p.v), 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      const flaggedNow = Math.abs(p.z) > threshold;
+      const text = `${p.v.toFixed(1)} units, |z| ${Math.abs(p.z).toFixed(2)}${flaggedNow ? ", flagged" : ""}`;
+      const tw = ctx.measureText(text).width;
+      const tx = Math.min(Math.max(hx + 8, 0), W - tw - 8);
+      ctx.fillStyle = getComputedStyle(canvas.parentElement).backgroundColor;
+      ctx.fillRect(tx - 4, topH - 22, tw + 8, 18);
+      ctx.fillStyle = flaggedNow ? c.anomaly : c.ink;
+      ctx.fillText(text, tx, topH - 20);
+    }
   }
 
   function updateReadout() {
     if (!readout) return;
-    readout.innerHTML = `Flagged <span class="hit">${flagged}</span> of ${seen.toLocaleString()} points`;
+    const n = points.filter((p) => Math.abs(p.z) > threshold).length;
+    readout.innerHTML = `<span class="hit">${n}</span> of ${points.length} points in view are flagged.`;
   }
 
   // ---------- animation loop ----------
@@ -336,6 +360,26 @@
   window
     .matchMedia("(prefers-color-scheme: dark)")
     .addEventListener?.("change", () => draw(0));
+  document.addEventListener("themechange", () => draw(0));
+  document.addEventListener("inject-anomaly", () => injectBtn?.click());
+
+  slider?.addEventListener("input", () => {
+    threshold = Number(slider.value);
+    if (sliderOut) sliderOut.textContent = threshold.toFixed(1);
+    draw(0);
+    updateReadout();
+  });
+
+  canvas.addEventListener("pointermove", (e) => {
+    const r = canvas.getBoundingClientRect();
+    const dx = r.width / (WINDOW - 1);
+    hover = Math.round((e.clientX - r.left) / dx);
+    if (!running || reduceMotion) draw(0);
+  });
+  canvas.addEventListener("pointerleave", () => {
+    hover = -1;
+    draw(0);
+  });
 
   if ("ResizeObserver" in window) new ResizeObserver(resize).observe(canvas);
   else window.addEventListener("resize", resize);
