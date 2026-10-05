@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Nishanth Ravula · Anomaly detection and ML systems</title>
+    <meta
+      name="description"
+      content="Nishanth Ravula is a software engineer building anomaly detection and data systems for retail, and a PhD student in AI. Drive a lap around his work in a small car game, or read the classic view."
+    />
+    <meta name="author" content="Nishanth Ravula" />
+    <link rel="canonical" href="https://nishanthravula.netlify.app/" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#e6ebf1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d131b" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content="Nishanth Ravula · Anomaly detection and ML systems" />
+    <meta
+      property="og:description"
+      content="Take a car for a lap around my career: anomaly detection research, responsible AI audits and engineering, one billboard at a time."
+    />
+    <meta property="og:url" content="https://nishanthravula.netlify.app/" />
+    <meta property="og:image" content="https://nishanthravula.netlify.app/assets/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/assets/fonts/literata.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/plex-cond-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/assets/site.css" />
+    <link rel="stylesheet" href="/assets/world.css" />
+    <link rel="modulepreload" href="/assets/world.js" />
+    <script src="/assets/theme.js"></script>
+    <script src="/assets/signal.js" defer></script>
+    <script src="/assets/figures.js" defer></script>
+    <script src="/assets/palette.js" defer></script>
+    <script src="/assets/world.js" type="module"></script>
+
+    <!-- JSONLD -->
+  </head>
+  <body class="world-page">
+    <a class="skip" href="/classic/">Skip to the classic view of this site</a>
+
+    <canvas id="world-canvas" tabindex="0"
+      aria-label="A driving game. Use the arrow keys or WASD to drive along the road. At each billboard, press Enter to read that part of the site."></canvas>
+
+    <header class="whud">
+      <a class="w-name" href="/">Nishanth Ravula</a>
+      <div class="w-stats" aria-label="Game stats">
+        <span><i class="coin-dot" aria-hidden="true"></i> <b id="hud-coins">0 / 48</b></span>
+        <span>Lap <b id="hud-lap">0:00.0</b></span>
+        <span class="w-best">Best <b id="hud-best">–</b></span>
+      </div>
+      <div class="w-tools">
+        <button type="button" id="sound-btn" class="ghost" aria-pressed="true">Sound on</button>
+        <a class="btn ghost" href="/classic/">Classic view</a>
+      </div>
+    </header>
+
+    <div id="stop-card" class="stop-card" hidden aria-live="polite">
+      <div class="stop-text">
+        <span id="stop-num"></span>
+        <b id="stop-title"></b>
+        <span id="stop-sub"></span>
+      </div>
+      <button type="button" id="stop-open" class="primary">Read more <kbd>Enter</kbd></button>
+    </div>
+    <div id="toast" class="toast" hidden role="status"></div>
+
+    <div class="pad" aria-hidden="true">
+      <div class="pad-left">
+        <button type="button" tabindex="-1" data-key="left" aria-label="Steer left">◀</button>
+        <button type="button" tabindex="-1" data-key="right" aria-label="Steer right">▶</button>
+      </div>
+      <div class="pad-right">
+        <button type="button" tabindex="-1" data-key="down" class="brake" aria-label="Brake">Brake</button>
+        <button type="button" tabindex="-1" data-key="up" class="gas" aria-label="Gas">Gas</button>
+      </div>
+    </div>
+
+    <section id="intro" class="intro-screen" aria-labelledby="intro-title">
+      <div class="intro-card">
+        <p class="intro-name">Nishanth Ravula</p>
+        <h1 id="intro-title">I teach machines to notice when data stops making sense.</h1>
+        <p class="deck">
+          Software engineer building anomaly detection for retail, and PhD student in AI. Take the car for a
+          lap: each billboard along the road is a part of my work.
+        </p>
+        <div class="intro-actions">
+          <button type="button" id="enter-world" class="primary" disabled>Loading</button>
+          <a class="btn" href="/classic/">Read the classic view</a>
+        </div>
+        <p class="intro-note" id="intro-note">Arrow keys or WASD to drive. On a phone, use the on-screen buttons.</p>
+      </div>
+    </section>
+
+    <aside id="panel" class="panel" hidden aria-labelledby="panel-title">
+      <div class="panel-head">
+        <div class="panel-heading">
+          <h2 id="panel-title"></h2>
+          <p id="panel-sub"></p>
+        </div>
+        <div class="panel-nav">
+          <button type="button" id="panel-prev" class="ghost" aria-label="Previous stop">Previous</button>
+          <button type="button" id="panel-next" class="ghost" aria-label="Next stop">Next</button>
+          <button type="button" id="panel-close" class="primary">Back to the car</button>
+        </div>
+      </div>
+      <div id="panel-body" class="panel-body">
+<!-- ZONES -->
+      </div>
+    </aside>
+
+    <noscript>
+      <p class="noscript">This site's 3D world needs JavaScript. <a href="/classic/">Read the classic view</a>.</p>
+    </noscript>
+  </body>
+</html>

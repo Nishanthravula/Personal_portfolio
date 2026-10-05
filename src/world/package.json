@@ -1,0 +1,13 @@
+{
+  "name": "nishanth-world",
+  "private": true,
+  "description": "Source for the 3D world on the home page. Build: npm install && npm run build (writes assets/world.js).",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs && cd ../.. && python3 scripts/build_world.py && python3 scripts/stamp_assets.py"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "three": "0.186.1"
+  }
+}
