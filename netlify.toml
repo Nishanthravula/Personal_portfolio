@@ -27,7 +27,7 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Old URLs from the previous template
+# Old URLs
 [[redirects]]
   from = "/projects.html"
   to = "/#work"
@@ -35,4 +35,8 @@
 [[redirects]]
   from = "/project-detail.html"
   to = "/#work"
+  status = 301
+[[redirects]]
+  from = "/classic/*"
+  to = "/"
   status = 301

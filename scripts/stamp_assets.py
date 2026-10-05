@@ -8,7 +8,7 @@ import pathlib
 import re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-PAGES = [ROOT / "index.html", ROOT / "classic" / "index.html", ROOT / "404.html", ROOT / "thanks" / "index.html"]
+PAGES = [ROOT / "index.html", ROOT / "404.html", ROOT / "thanks" / "index.html"]
 REF = re.compile(r'(/assets/[\w.-]+\.(?:css|js))(?:\?v=[0-9a-f]+)?"')
 
 

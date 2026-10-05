@@ -303,11 +303,6 @@ kbd {
   color: var(--ink);
   background: var(--sheet);
 }
-@media (hover: none) {
-  #palette-key {
-    display: none;
-  }
-}
 
 label {
   display: block;
@@ -337,7 +332,7 @@ textarea {
   resize: vertical;
 }
 
-/* Range sliders: same look in every browser, with a filled track (--fill is set by palette.js). */
+/* Range sliders: same look in every browser, with a filled track (--fill is set by site.js). */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -808,196 +803,6 @@ mark.redact.personal {
   margin: 0 0.55rem;
 }
 
-/* ---------- game ---------- */
-
-.hud {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 1.6rem;
-  font-family: var(--ui);
-  font-size: var(--s-1);
-  color: var(--muted);
-  margin-bottom: 0.7rem;
-}
-.hud b {
-  color: var(--ink);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-  margin-left: 0.3rem;
-}
-.game-stage {
-  position: relative;
-  border-radius: 4px;
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-}
-.game-stage.running {
-  cursor: crosshair;
-}
-.game-stage canvas {
-  height: clamp(14rem, 34vw, 22rem);
-}
-.game-stage canvas:focus {
-  outline: none;
-}
-.game-stage.running::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border: 2px solid var(--trace);
-  border-radius: 6px;
-  pointer-events: none;
-  opacity: 0.55;
-}
-.game-start {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 0.6rem;
-  padding: 1rem;
-  background: color-mix(in srgb, var(--sheet) 80%, transparent);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
-}
-.game-title {
-  font-family: var(--text);
-  font-size: clamp(1.4rem, 1.1rem + 1.2vw, var(--s3));
-  font-weight: 450;
-  line-height: 1.15;
-  margin: 0;
-}
-.game-rules {
-  max-width: 30rem;
-  margin: 0 0 0.4rem;
-  font-family: var(--ui);
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-.game-results {
-  margin-top: 1rem;
-}
-.game-results .game-title {
-  font-size: clamp(1.3rem, 1.1rem + 0.7vw, var(--s2));
-  margin-bottom: 0.2rem;
-}
-.game-results table.data td b {
-  font-weight: 600;
-}
-
-/* ---------- fairness challenge ---------- */
-
-.challenge {
-  border: 1px solid var(--grid);
-  border-left: 3px solid var(--trace);
-  border-radius: 4px;
-  background: var(--paper);
-  padding: 0.9rem 1rem 1rem;
-  margin-bottom: 1.1rem;
-  font-family: var(--ui);
-  font-size: var(--s-1);
-}
-.challenge-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  color: var(--muted);
-}
-.pips {
-  display: flex;
-  gap: 0.35rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.pips li {
-  width: 1.6rem;
-  height: 0.35rem;
-  border-radius: 2px;
-  background: var(--grid);
-}
-.pips li.current {
-  background: color-mix(in srgb, var(--trace) 45%, var(--grid));
-}
-.pips li.done {
-  background: var(--trace);
-}
-.challenge-goal {
-  font-family: var(--text);
-  font-size: 1rem;
-  color: var(--ink);
-  margin: 0.45rem 0 0.6rem;
-  max-width: 44rem;
-}
-.checks {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.3rem;
-}
-.checks li {
-  position: relative;
-  padding-left: 1.6rem;
-  color: var(--muted);
-}
-.checks li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.12rem;
-  width: 1rem;
-  height: 1rem;
-  border: 1.5px solid var(--muted);
-  border-radius: 50%;
-}
-.checks li.ok {
-  color: var(--ink);
-}
-.checks li.ok::before {
-  border-color: var(--trace);
-  background: var(--trace);
-}
-.checks li.ok::after {
-  content: "";
-  position: absolute;
-  left: 0.33rem;
-  top: 0.3rem;
-  width: 0.3rem;
-  height: 0.5rem;
-  border: solid var(--sheet);
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-}
-.challenge-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.8rem;
-}
-.challenge-actions:not(:has(button:not([hidden]))) {
-  display: none;
-}
-.reveal {
-  margin-top: 0.9rem;
-  padding-top: 0.8rem;
-  border-top: 1px solid var(--grid);
-  font-family: var(--text);
-  font-size: 0.95rem;
-  color: var(--ink);
-  max-width: 46rem;
-}
-.reveal p {
-  margin: 0 0 0.6rem;
-}
-.reveal b {
-  color: var(--anomaly);
-}
 .seg.policy {
   margin-top: 0.9rem;
 }
@@ -1268,93 +1073,6 @@ form .full {
   color: var(--muted);
 }
 
-/* ---------- command palette ---------- */
-
-dialog#palette {
-  width: min(36rem, calc(100% - 2rem));
-  max-height: min(34rem, 80vh);
-  margin-top: 12vh;
-  padding: 0;
-  border: 1px solid var(--grid);
-  border-radius: 8px;
-  background: var(--sheet);
-  color: var(--ink);
-  box-shadow: 0 24px 60px -20px rgb(10 18 30 / 0.45);
-  overflow: hidden;
-}
-dialog#palette[open] {
-  display: flex;
-  flex-direction: column;
-}
-dialog#palette::backdrop {
-  background: rgb(10 18 30 / 0.35);
-}
-#palette-input {
-  border: 0;
-  border-bottom: 1px solid var(--grid);
-  border-radius: 0;
-  background: transparent;
-  font-size: max(1.05rem, 16px);
-  padding: 1rem 1.1rem;
-}
-#palette-input:focus {
-  box-shadow: none;
-}
-#palette-list {
-  list-style: none;
-  margin: 0;
-  padding: 0.4rem;
-  overflow: auto;
-  flex: 1;
-  font-family: var(--ui);
-}
-#palette-list li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  min-height: var(--tap);
-  padding: 0.45rem 0.7rem;
-  border-radius: 5px;
-  cursor: pointer;
-}
-#palette-list li.group {
-  font-size: var(--s-1);
-  color: var(--muted);
-  min-height: 0;
-  padding: 0.6rem 0.7rem 0.25rem;
-  cursor: default;
-}
-#palette-list li.empty {
-  color: var(--muted);
-  cursor: default;
-}
-#palette-list li[aria-selected="true"] {
-  background: var(--ink);
-  color: var(--paper);
-}
-#palette-list small {
-  color: var(--muted);
-  white-space: nowrap;
-}
-#palette-list li[aria-selected="true"] small {
-  color: inherit;
-  opacity: 0.75;
-}
-.palette-hint {
-  margin: 0;
-  padding: 0.6rem 1.1rem;
-  border-top: 1px solid var(--grid);
-  font-family: var(--ui);
-  font-size: var(--s-1);
-  color: var(--muted);
-}
-@media (hover: none) {
-  .palette-hint {
-    display: none;
-  }
-}
-
 /* =================================================================== */
 /* Breakpoints                                                          */
 /* =================================================================== */
@@ -1533,11 +1251,6 @@ dialog#palette::backdrop {
   }
   form button[type="submit"] {
     width: 100%;
-  }
-  dialog#palette {
-    margin-top: 0.75rem;
-    width: calc(100% - 1rem);
-    max-height: 85vh;
   }
 }
 
