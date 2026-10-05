@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Nishanth Ravula · Anomaly detection and ML systems</title>
+    <meta
+      name="description"
+      content="Nishanth Ravula is a software engineer building anomaly detection and data systems for retail, and a PhD student in AI. Explore his work as a small 3D world, or read the classic view."
+    />
+    <meta name="author" content="Nishanth Ravula" />
+    <link rel="canonical" href="https://nishanthravula.netlify.app/" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#e6ebf1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0d131b" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content="Nishanth Ravula · Anomaly detection and ML systems" />
+    <meta
+      property="og:description"
+      content="Drive through a small 3D world of anomaly detection research, responsible AI audits and engineering, then play Anomaly Hunter."
+    />
+    <meta property="og:url" content="https://nishanthravula.netlify.app/" />
+    <meta property="og:image" content="https://nishanthravula.netlify.app/assets/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/assets/fonts/literata.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/plex-cond-500.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/assets/site.css" />
+    <link rel="stylesheet" href="/assets/world.css" />
+    <link rel="modulepreload" href="/assets/world.js" />
+    <script src="/assets/theme.js"></script>
+    <script src="/assets/signal.js" defer></script>
+    <script src="/assets/figures.js" defer></script>
+    <script src="/assets/palette.js" defer></script>
+    <script src="/assets/world.js" type="module"></script>
+
+    <!-- JSONLD -->
+  </head>
+  <body class="world-page">
+    <a class="skip" href="/classic/">Skip to the classic view of this site</a>
+
+    <canvas id="world-canvas" tabindex="0"
+      aria-label="A 3D world. Drive with the arrow keys or WASD, press E to open the landmark you are at, or use the Places menu to jump anywhere."></canvas>
+    <div id="labels" class="labels"></div>
+    <div id="fade" class="fade" aria-hidden="true"></div>
+
+    <header class="whud">
+      <a class="w-name" href="/">Nishanth Ravula</a>
+      <div class="w-tools">
+        <button type="button" id="places-btn" class="ghost" aria-expanded="false" aria-controls="places">Places</button>
+        <button type="button" id="sound-btn" class="ghost" aria-pressed="true">Sound on</button>
+        <button type="button" id="theme-toggle" class="ghost">Dark</button>
+        <a class="btn ghost w-classic" href="/classic/">Classic view</a>
+      </div>
+    </header>
+
+    <nav id="places" class="places" hidden aria-label="Places">
+      <p class="places-title">Jump to</p>
+      <ul id="places-list"></ul>
+    </nav>
+
+    <canvas id="minimap" class="minimap" aria-label="Map of the world. Click a landmark to travel there."></canvas>
+    <div id="prompt" class="prompt" hidden><button type="button" id="prompt-open" class="primary"></button></div>
+    <div id="toast" class="toast" hidden role="status"></div>
+
+    <section id="intro" class="intro-screen" aria-labelledby="intro-title">
+      <div class="intro-card">
+        <p class="intro-name">Nishanth Ravula</p>
+        <h1 id="intro-title">I teach machines to notice when data stops making sense.</h1>
+        <p class="deck">
+          Software engineer building anomaly detection for retail, and PhD student in AI. This site is a small
+          world: drive to each landmark for the work behind it, knock a few things over, and see if you can
+          survive Anomaly Hunter in the arcade.
+        </p>
+        <div class="intro-actions">
+          <button type="button" id="enter-world" class="primary" disabled>Loading the world</button>
+          <a class="btn" href="/classic/">Read the classic view</a>
+        </div>
+        <p class="intro-note" id="intro-note">Arrow keys or WASD to drive. Hold the mouse or a finger to steer. E opens a landmark.</p>
+      </div>
+    </section>
+
+    <aside id="panel" class="panel" hidden aria-labelledby="panel-title">
+      <div class="panel-head">
+        <div class="panel-heading">
+          <h2 id="panel-title"></h2>
+          <p id="panel-sub"></p>
+        </div>
+        <div class="panel-nav">
+          <button type="button" id="panel-prev" class="ghost" aria-label="Previous landmark">Previous</button>
+          <button type="button" id="panel-next" class="ghost" aria-label="Next landmark">Next</button>
+          <button type="button" id="panel-close" class="primary">Back to the world</button>
+        </div>
+      </div>
+      <div id="panel-body" class="panel-body">
+<!-- ZONES -->
+      </div>
+    </aside>
+
+    <div id="arcade-hud" class="ahud" hidden>
+      <div class="ahud-bar">
+        <span>Score <b id="a-score">0</b> <em id="a-mult"></em></span>
+        <span>Wave <b id="a-wave">1</b></span>
+        <span class="a-int">Core <b id="a-integrity">100%</b> <i class="a-track"><i id="a-integrity-bar"></i></i></span>
+        <span class="a-best">Best <b id="a-best">0</b></span>
+        <button type="button" id="a-pause" class="ghost">Pause</button>
+      </div>
+      <div id="a-banner" class="a-banner" hidden></div>
+      <div id="a-pop" class="a-pop" hidden aria-live="polite"></div>
+      <button type="button" id="a-fire" class="a-fire" aria-label="Fire a pulse">Pulse</button>
+      <div id="a-paused" class="a-card" hidden role="dialog" aria-label="Paused">
+        <h2>Paused</h2>
+        <div class="a-row">
+          <button type="button" id="a-resume" class="primary">Resume</button>
+          <button type="button" id="a-exit-2">Back to the world</button>
+        </div>
+      </div>
+      <div id="a-over" class="a-card" hidden role="dialog" aria-labelledby="a-over-title">
+        <h2 id="a-over-title">Core breached</h2>
+        <div id="a-over-body"></div>
+        <div class="a-row">
+          <button type="button" id="a-again" class="primary">Play again</button>
+          <button type="button" id="a-exit">Back to the world</button>
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="noscript">This site's 3D world needs JavaScript. <a href="/classic/">Read the classic view</a>.</p>
+    </noscript>
+  </body>
+</html>
