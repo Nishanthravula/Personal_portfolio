@@ -18,7 +18,7 @@ function ensure() {
     if (!AC) return null;
     ctx = new AC();
     master = ctx.createGain();
-    master.gain.value = 0.35;
+    master.gain.value = 0.3;
     master.connect(ctx.destination);
   }
   if (ctx.state === "suspended") ctx.resume();
@@ -62,26 +62,14 @@ function noise({ dur = 0.2, gain = 0.3, freq = 1200, delay = 0 }) {
 }
 
 export const sfx = {
-  pulse: () => tone({ type: "sine", from: 880, to: 140, dur: 0.22, gain: 0.35 }),
-  hit: () => {
-    noise({ dur: 0.12, gain: 0.5, freq: 1800 });
-    tone({ type: "square", from: 660, to: 990, dur: 0.07, gain: 0.08 });
+  coin: () => {
+    tone({ type: "square", from: 988, dur: 0.06, gain: 0.08 });
+    tone({ type: "square", from: 1319, dur: 0.12, gain: 0.08, delay: 0.06 });
   },
-  boss: () => tone({ type: "sawtooth", from: 120, to: 60, dur: 0.5, gain: 0.25 }),
-  core: () => {
-    tone({ type: "sine", from: 120, to: 40, dur: 0.35, gain: 0.6 });
-    noise({ dur: 0.25, gain: 0.3, freq: 300 });
-  },
-  falsePositive: () => tone({ type: "square", from: 220, to: 160, dur: 0.25, gain: 0.15 }),
-  wave: () => [523, 659, 784, 1047].forEach((f, i) => tone({ type: "triangle", from: f, dur: 0.14, gain: 0.25, delay: i * 0.08 })),
-  over: () => [392, 330, 262, 196].forEach((f, i) => tone({ type: "triangle", from: f, dur: 0.22, gain: 0.25, delay: i * 0.14 })),
+  stop: () => [660, 880].forEach((f, i) => tone({ type: "sine", from: f, dur: 0.12, gain: 0.18, delay: i * 0.07 })),
+  bump: () => noise({ dur: 0.1, gain: 0.35, freq: 400 }),
+  lap: () => [523, 659, 784, 1047].forEach((f, i) => tone({ type: "triangle", from: f, dur: 0.14, gain: 0.22, delay: i * 0.08 })),
   open: () => tone({ type: "triangle", from: 520, to: 780, dur: 0.12, gain: 0.15 }),
-  milestone: () => [660, 880].forEach((f, i) => tone({ type: "sine", from: f, dur: 0.12, gain: 0.18, delay: i * 0.07 })),
-  quack: () => {
-    tone({ type: "sawtooth", from: 620, to: 380, dur: 0.16, gain: 0.25 });
-    tone({ type: "square", from: 900, to: 500, dur: 0.12, gain: 0.08 });
-  },
-  bump: () => noise({ dur: 0.08, gain: 0.25, freq: 500 }),
 };
 
 export const sound = {

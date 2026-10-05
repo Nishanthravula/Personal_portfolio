@@ -1,4 +1,4 @@
-"""Build the home page (the 3D world) from src/world/index.template.html.
+"""Build the home page (the car game) from src/world/index.template.html.
 
 The landmark panels reuse the content of classic/index.html, so the writing lives in one place:
 edit the classic page, then run this script (npm run build in src/world runs it for you).
@@ -35,8 +35,8 @@ welcome = section(
     intro.select_one(".role"),
     intro.select_one("figure.hero-fig"),
     BeautifulSoup(
-        '<p class="panel-tip">Every landmark in this world opens a part of my work. Use <b>Places</b> to jump '
-        'anywhere, or <a href="/classic/">read everything on one page</a>.</p>',
+        '<p class="panel-tip">Each billboard on the road opens a part of my work. Prefer reading? '
+        '<a href="/classic/">Everything is on one page</a>.</p>',
         "html.parser",
     ),
 )
@@ -46,37 +46,12 @@ work = entries("work")
 experience = entries("experience")
 education = entries("education")
 
-arcade = section(
-    "arcade",
-    BeautifulSoup(
-        """
-        <div class="arcade-intro">
-          <p class="arcade-lede">Anomalies rise out of the arena floor and race for the data core. Stop them before
-          the core's integrity hits zero.</p>
-          <ul class="arcade-rules">
-            <li><b>Ram</b> red anomalies with the probe, or fire a <b>shockwave pulse</b> to hit everything nearby.</li>
-            <li><b>Blue points are normal data.</b> Pulse one and it's a false positive: you lose points and your combo.</li>
-            <li>Quick kills build a <b>combo multiplier</b> up to five times.</li>
-            <li>Every fourth wave brings <b>concept drift</b>, a big anomaly that splits when you hit it.</li>
-          </ul>
-          <dl class="arcade-controls">
-            <div><dt>Keyboard</dt><dd>WASD or arrows to drive, Space to pulse, Shift to boost, Esc to pause</dd></div>
-            <div><dt>Mouse</dt><dd>Hold the left button to drive toward the cursor, right-click to pulse</dd></div>
-            <div><dt>Touch</dt><dd>Hold anywhere to drive, tap Pulse to fire</dd></div>
-          </dl>
-          <button type="button" class="primary arcade-start" data-start-arcade>Play Anomaly Hunter</button>
-        </div>""",
-        "html.parser",
-    ),
-)
-
 zones = [
     welcome,
     section("rstad", research[0]),
     section("audit", research[1]),
     section("guard", work[0], work[2]),
     section("warehouse", work[1]),
-    arcade,
     section(
         "career",
         *experience,

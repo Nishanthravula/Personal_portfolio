@@ -6,7 +6,7 @@
     <title>Nishanth Ravula · Anomaly detection and ML systems</title>
     <meta
       name="description"
-      content="Nishanth Ravula is a software engineer building anomaly detection and data systems for retail, and a PhD student in AI. Explore his work as a small 3D world, or read the classic view."
+      content="Nishanth Ravula is a software engineer building anomaly detection and data systems for retail, and a PhD student in AI. Drive a lap around his work in a small car game, or read the classic view."
     />
     <meta name="author" content="Nishanth Ravula" />
     <link rel="canonical" href="https://nishanthravula.netlify.app/" />
@@ -18,7 +18,7 @@
     <meta property="og:title" content="Nishanth Ravula · Anomaly detection and ML systems" />
     <meta
       property="og:description"
-      content="Drive through a small 3D world of anomaly detection research, responsible AI audits and engineering, then play Anomaly Hunter."
+      content="Take a car for a lap around my career: anomaly detection research, responsible AI audits and engineering, one billboard at a time."
     />
     <meta property="og:url" content="https://nishanthravula.netlify.app/" />
     <meta property="og:image" content="https://nishanthravula.netlify.app/assets/og.png" />
@@ -45,43 +45,55 @@
     <a class="skip" href="/classic/">Skip to the classic view of this site</a>
 
     <canvas id="world-canvas" tabindex="0"
-      aria-label="A 3D world. Drive with the arrow keys or WASD, press E to open the landmark you are at, or use the Places menu to jump anywhere."></canvas>
-    <div id="labels" class="labels"></div>
-    <div id="fade" class="fade" aria-hidden="true"></div>
+      aria-label="A driving game. Use the arrow keys or WASD to drive along the road. At each billboard, press Enter to read that part of the site."></canvas>
 
     <header class="whud">
       <a class="w-name" href="/">Nishanth Ravula</a>
+      <div class="w-stats" aria-label="Game stats">
+        <span><i class="coin-dot" aria-hidden="true"></i> <b id="hud-coins">0 / 48</b></span>
+        <span>Lap <b id="hud-lap">0:00.0</b></span>
+        <span class="w-best">Best <b id="hud-best">–</b></span>
+      </div>
       <div class="w-tools">
-        <button type="button" id="places-btn" class="ghost" aria-expanded="false" aria-controls="places">Places</button>
         <button type="button" id="sound-btn" class="ghost" aria-pressed="true">Sound on</button>
-        <button type="button" id="theme-toggle" class="ghost">Dark</button>
-        <a class="btn ghost w-classic" href="/classic/">Classic view</a>
+        <a class="btn ghost" href="/classic/">Classic view</a>
       </div>
     </header>
 
-    <nav id="places" class="places" hidden aria-label="Places">
-      <p class="places-title">Jump to</p>
-      <ul id="places-list"></ul>
-    </nav>
-
-    <canvas id="minimap" class="minimap" aria-label="Map of the world. Click a landmark to travel there."></canvas>
-    <div id="prompt" class="prompt" hidden><button type="button" id="prompt-open" class="primary"></button></div>
+    <div id="stop-card" class="stop-card" hidden aria-live="polite">
+      <div class="stop-text">
+        <span id="stop-num"></span>
+        <b id="stop-title"></b>
+        <span id="stop-sub"></span>
+      </div>
+      <button type="button" id="stop-open" class="primary">Read more <kbd>Enter</kbd></button>
+    </div>
     <div id="toast" class="toast" hidden role="status"></div>
+
+    <div class="pad" aria-hidden="true">
+      <div class="pad-left">
+        <button type="button" tabindex="-1" data-key="left" aria-label="Steer left">◀</button>
+        <button type="button" tabindex="-1" data-key="right" aria-label="Steer right">▶</button>
+      </div>
+      <div class="pad-right">
+        <button type="button" tabindex="-1" data-key="down" class="brake" aria-label="Brake">Brake</button>
+        <button type="button" tabindex="-1" data-key="up" class="gas" aria-label="Gas">Gas</button>
+      </div>
+    </div>
 
     <section id="intro" class="intro-screen" aria-labelledby="intro-title">
       <div class="intro-card">
         <p class="intro-name">Nishanth Ravula</p>
         <h1 id="intro-title">I teach machines to notice when data stops making sense.</h1>
         <p class="deck">
-          Software engineer building anomaly detection for retail, and PhD student in AI. This site is a small
-          world: drive to each landmark for the work behind it, knock a few things over, and see if you can
-          survive Anomaly Hunter in the arcade.
+          Software engineer building anomaly detection for retail, and PhD student in AI. Take the car for a
+          lap: each billboard along the road is a part of my work.
         </p>
         <div class="intro-actions">
-          <button type="button" id="enter-world" class="primary" disabled>Loading the world</button>
+          <button type="button" id="enter-world" class="primary" disabled>Loading</button>
           <a class="btn" href="/classic/">Read the classic view</a>
         </div>
-        <p class="intro-note" id="intro-note">Arrow keys or WASD to drive. Hold the mouse or a finger to steer. E opens a landmark.</p>
+        <p class="intro-note" id="intro-note">Arrow keys or WASD to drive. On a phone, use the on-screen buttons.</p>
       </div>
     </section>
 
@@ -92,43 +104,15 @@
           <p id="panel-sub"></p>
         </div>
         <div class="panel-nav">
-          <button type="button" id="panel-prev" class="ghost" aria-label="Previous landmark">Previous</button>
-          <button type="button" id="panel-next" class="ghost" aria-label="Next landmark">Next</button>
-          <button type="button" id="panel-close" class="primary">Back to the world</button>
+          <button type="button" id="panel-prev" class="ghost" aria-label="Previous stop">Previous</button>
+          <button type="button" id="panel-next" class="ghost" aria-label="Next stop">Next</button>
+          <button type="button" id="panel-close" class="primary">Back to the car</button>
         </div>
       </div>
       <div id="panel-body" class="panel-body">
 <!-- ZONES -->
       </div>
     </aside>
-
-    <div id="arcade-hud" class="ahud" hidden>
-      <div class="ahud-bar">
-        <span>Score <b id="a-score">0</b> <em id="a-mult"></em></span>
-        <span>Wave <b id="a-wave">1</b></span>
-        <span class="a-int">Core <b id="a-integrity">100%</b> <i class="a-track"><i id="a-integrity-bar"></i></i></span>
-        <span class="a-best">Best <b id="a-best">0</b></span>
-        <button type="button" id="a-pause" class="ghost">Pause</button>
-      </div>
-      <div id="a-banner" class="a-banner" hidden></div>
-      <div id="a-pop" class="a-pop" hidden aria-live="polite"></div>
-      <button type="button" id="a-fire" class="a-fire" aria-label="Fire a pulse">Pulse</button>
-      <div id="a-paused" class="a-card" hidden role="dialog" aria-label="Paused">
-        <h2>Paused</h2>
-        <div class="a-row">
-          <button type="button" id="a-resume" class="primary">Resume</button>
-          <button type="button" id="a-exit-2">Back to the world</button>
-        </div>
-      </div>
-      <div id="a-over" class="a-card" hidden role="dialog" aria-labelledby="a-over-title">
-        <h2 id="a-over-title">Core breached</h2>
-        <div id="a-over-body"></div>
-        <div class="a-row">
-          <button type="button" id="a-again" class="primary">Play again</button>
-          <button type="button" id="a-exit">Back to the world</button>
-        </div>
-      </div>
-    </div>
 
     <noscript>
       <p class="noscript">This site's 3D world needs JavaScript. <a href="/classic/">Read the classic view</a>.</p>

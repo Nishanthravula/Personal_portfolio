@@ -2,19 +2,19 @@
 
 Personal site of Nishanth Ravula: anomaly detection, ML systems and responsible AI.
 
-The home page is a small 3D world you drive through (Three.js and cannon-es). Each landmark opens
-the work behind it, and the arcade runs **Anomaly Hunter**. The same content is also available as
-a plain page at `/classic/`.
+The home page is a simple car game built with Three.js: drive a lap of one loop road, stop at
+eight billboards to open each part of the site, collect coins and beat your best lap. The same
+content is also available as a plain page at `/classic/`.
 
 ## Layout
 
 | Path | What it is |
 |---|---|
-| `index.html` | The 3D world. Generated: do not edit by hand |
-| `classic/index.html` | The classic page. **Edit content here**; the world's panels are built from it |
-| `src/world/` | Source for the world: `main.js`, `scenery.js` (terrain, landmarks, props), `player.js` (probe, input, particles), `arcade.js` (Anomaly Hunter), `ui.js`, `audio.js`, `index.template.html` |
-| `assets/world.js` | Bundled world (built from `src/world`) |
-| `assets/world.css` | World overlays: intro, panels, HUD, minimap |
+| `index.html` | The car game. Generated: do not edit by hand |
+| `classic/index.html` | The classic page. **Edit content here**; the game's panels are built from it |
+| `src/world/` | Source for the game: `main.js` (road, car, billboards, coins, laps, UI), `audio.js`, `index.template.html` |
+| `assets/world.js` | Bundled game (built from `src/world`) |
+| `assets/world.css` | Game overlays: intro, HUD, stop card, touch pad, panels |
 | `assets/site.css` | Shared styles and the classic page |
 | `assets/signal.js`, `assets/figures.js` | Interactive figures 1 to 5 |
 | `assets/palette.js` | Command palette, theme switch, layout behavior |
