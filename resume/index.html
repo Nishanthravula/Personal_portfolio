@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Résumé · Nishanth Ravula</title>
+    <meta name="description" content="Résumé of Nishanth Ravula, software and ML engineer: anomaly detection, data systems and responsible AI." />
+    <link rel="canonical" href="https://nishanthravula.netlify.app/resume/" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/site.css?v=1cbe5b3304" />
+    <link rel="stylesheet" href="/assets/resume.css?v=f07ef31127" />
+    <script src="/assets/theme.js?v=046b33d248"></script>
+    <script src="/assets/site.js?v=6f643fd24e" defer></script>
+  </head>
+  <body class="resume-page">
+    <div class="resume-bar">
+      <a href="/">Back to the site</a>
+      <div class="resume-bar-actions">
+        <button type="button" data-print>Save as PDF</button>
+        <a class="btn blue" href="/resume.pdf" download>Download PDF</a>
+      </div>
+    </div>
+
+    <main class="resume" id="main">
+      <header class="cv-head">
+        <h1>Nishanth Ravula</h1>
+        <p class="cv-title">Software and ML Engineer</p>
+        <p class="cv-contact">
+          <a href="mailto:nishanth.ravula@outlook.com">nishanth.ravula@outlook.com</a>
+          <a href="https://www.linkedin.com/in/ravula-nishanth-0716/">linkedin.com/in/ravula-nishanth-0716</a>
+          <a href="https://github.com/Nishanthravula">github.com/Nishanthravula</a>
+          <a href="https://nishanthravula.netlify.app/">nishanthravula.netlify.app</a>
+          <span>Texas, open to relocation</span>
+        </p>
+      </header>
+
+      <section>
+        <h2>Summary</h2>
+        <p>
+          Software and ML engineer who builds anomaly detection and data systems for retail operations. Experience
+          across production data infrastructure, deep learning for autonomous-vehicle perception and production
+          web front ends. PhD student in AI researching self-supervised time-series anomaly detection, with six
+          published audits of AI systems for fairness and regulatory compliance.
+        </p>
+      </section>
+
+      <section>
+        <h2>Experience</h2>
+
+        <div class="cv-item">
+          <div class="cv-line"><h3>Software Developer, Dollar General</h3><span>April 2024 to present</span></div>
+          <ul>
+            <li>Build anomaly detection for retail ordering data across the store network.</li>
+            <li>Tune and reconcile Oracle workloads behind the ordering pipeline, including query rewrites for correctness and speed.</li>
+            <li>Prototyped a DuckDB and FastAPI analytical layer that serves dashboards from versioned snapshots, taking load off production databases; validated with async load tests, Locust and per-request server timing.</li>
+            <li>Introduced JSON-schema validation for MongoDB inputs, reducing user-side data errors by 40%.</li>
+            <li>Keep Oracle and MongoDB in sync and maintain the CI/CD pipelines that ship them.</li>
+          </ul>
+        </div>
+
+        <div class="cv-item">
+          <div class="cv-line"><h3>Assistant System Engineer, Tata Consultancy Services</h3><span>July 2021 to July 2022</span></div>
+          <ul>
+            <li>Built and trained deep learning models for autonomous-vehicle perception in TensorFlow.</li>
+            <li>Improved model accuracy by 20% through better training data, regularization and hyperparameter tuning.</li>
+            <li>Led the data annotation team and designed the quality-control process behind the training set.</li>
+            <li>Deployed models and managed the ML lifecycle on Azure ML.</li>
+          </ul>
+        </div>
+
+        <div class="cv-item">
+          <div class="cv-line"><h3>Web Developer, Halfway</h3><span>February 2020 to June 2021</span></div>
+          <ul>
+            <li>Built the React and Next.js front end with Google OAuth and Maps APIs.</li>
+            <li>Improved page performance by 35% with component-level optimization and code-splitting.</li>
+          </ul>
+        </div>
+
+        <div class="cv-item">
+          <div class="cv-line"><h3>Frontend Developer Intern, PrimeFort</h3><span>October 2019 to January 2020</span></div>
+          <ul>
+            <li>Built React interfaces and reusable components for client websites.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>Selected projects</h2>
+        <div class="cv-item">
+          <div class="cv-line"><h3>RSTAD: self-supervised anomaly detection for retail time series</h3><span>Paper in preparation</span></div>
+          <p>Transformer masked autoencoder with dual-branch scoring: reconstruction error plus distance to a kNN memory bank of normal patterns, targeting the over-generalization failure of memory-based detectors. Benchmarked on SMD, SMAP, MSL and NAB. PyTorch, MLflow.</p>
+        </div>
+        <div class="cv-item">
+          <div class="cv-line"><h3>Responsible AI audits</h3><span>6 published on GitHub</span></div>
+          <p>Audits of real and realistic AI systems against the EU AI Act, GDPR and NIST AI RMF. Applying equal opportunity cut a recidivism model's error-rate disparity by 85% for 0.63 points of accuracy.</p>
+        </div>
+        <div class="cv-item">
+          <div class="cv-line"><h3>mcp-guardrail</h3><span>Open source, TypeScript</span></div>
+          <p>A stdio proxy for the Model Context Protocol that redacts secrets and personal data from AI agents' tool results before they reach the model. CLI and test suite with CI.</p>
+        </div>
+        <div class="cv-item">
+          <div class="cv-line"><h3>Agent tooling on the Model Context Protocol</h3><span>TypeScript, React</span></div>
+          <p>A LinkedIn MCP server with OAuth 2.0 and confirm-before-post, and a job-application agent over the Indeed MCP server that tailors résumés and drafts cover letters.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Education</h2>
+        <div class="cv-item">
+          <div class="cv-line"><h3>PhD, Artificial Intelligence, University of the Cumberlands</h3><span>In progress</span></div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-line"><h3>MS, Computer Science and Engineering, University at Buffalo, SUNY</h3><span>2022 to 2023</span></div>
+        </div>
+        <div class="cv-item">
+          <div class="cv-line"><h3>BTech, Computer Science and Engineering, Sri Indu College of Engineering and Technology</h3><span>2017 to 2021</span></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Skills</h2>
+        <dl class="cv-skills">
+          <dt>Machine learning</dt><dd>PyTorch, TensorFlow, scikit-learn, MLflow, Azure ML, self-supervised learning, anomaly detection</dd>
+          <dt>Data</dt><dd>Oracle, PL/SQL, DuckDB, Parquet, MongoDB, PostgreSQL, MySQL, Solr</dd>
+          <dt>Backend</dt><dd>Python, FastAPI, Flask, Django, Node.js, REST</dd>
+          <dt>Frontend</dt><dd>TypeScript, JavaScript, React, Next.js, Redux</dd>
+          <dt>AI agents</dt><dd>Model Context Protocol, OAuth 2.0, LLM evaluation</dd>
+          <dt>Delivery</dt><dd>Docker, Jenkins, CI/CD, Git, Locust, GCP, Azure</dd>
+          <dt>Governance</dt><dd>EU AI Act, GDPR, NIST AI RMF, fairness metrics, algorithmic impact assessment</dd>
+        </dl>
+      </section>
+    </main>
+  </body>
+</html>

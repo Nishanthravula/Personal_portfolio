@@ -1,0 +1,30 @@
+# Nishanth Ravula
+
+> Software and ML engineer who builds anomaly detection and data systems for retail operations, and a PhD student in Artificial Intelligence researching self-supervised time-series anomaly detection and responsible AI. Open to ML and software engineering roles. Based in Texas, open to relocation.
+
+Contact: nishanth.ravula@outlook.com · https://www.linkedin.com/in/ravula-nishanth-0716/ · https://github.com/Nishanthravula
+
+## Experience
+
+- Software Developer, Dollar General (April 2024 to present): anomaly detection for retail ordering data across the store network; Oracle performance tuning and reconciliation; a DuckDB and FastAPI analytical layer prototype; JSON-schema validation for MongoDB inputs that reduced user-side data errors by 40%; CI/CD.
+- Assistant System Engineer, Tata Consultancy Services (July 2021 to July 2022): deep learning for autonomous-vehicle perception in TensorFlow; improved model accuracy by 20%; led data annotation quality control; Azure ML deployment.
+- Web Developer, Halfway (February 2020 to June 2021): React and Next.js front end; 35% faster pages.
+- Frontend Developer Intern, PrimeFort (October 2019 to January 2020): React interfaces.
+
+## Selected work
+
+- [RSTAD](https://nishanthravula.netlify.app/#rstad): self-supervised anomaly detector for retail time series (Transformer masked autoencoder, dual-branch scoring with a kNN memory bank). Paper in preparation.
+- [Responsible AI audits](https://github.com/Nishanthravula/responsible-ai-audits): six published audits of AI systems against the EU AI Act, GDPR and NIST AI RMF.
+- [mcp-guardrail](https://nishanthravula.netlify.app/#guard): open-source stdio proxy that redacts secrets and personal data from Model Context Protocol tool results.
+- [Snapshot analytical layer](https://nishanthravula.netlify.app/#serve): DuckDB snapshots over partitioned Parquet served through FastAPI.
+
+## Education
+
+- PhD, Artificial Intelligence, University of the Cumberlands (in progress)
+- MS, Computer Science and Engineering, University at Buffalo, SUNY (2022 to 2023)
+- BTech, Computer Science and Engineering, Sri Indu College of Engineering and Technology (2017 to 2021)
+
+## Links
+
+- [Full site](https://nishanthravula.netlify.app/)
+- [Résumé](https://nishanthravula.netlify.app/resume/) ([PDF](https://nishanthravula.netlify.app/resume.pdf))
