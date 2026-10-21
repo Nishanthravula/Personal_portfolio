@@ -70,7 +70,7 @@
   --margin-col: 9.5rem;
   --gap: clamp(1.25rem, 3vw, 2.5rem);
   --gutter: clamp(1rem, 4.5vw, 3rem);
-  --max: 72rem;
+  --max: 78rem;
   --head-h: 3.75rem;
   --tap: 2.25rem;
   color-scheme: light;
@@ -184,12 +184,11 @@ a:hover {
   margin-inline: auto;
 }
 
-.page {
+.layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  column-gap: 3.5rem;
 }
-.page > main {
+.layout > main {
   min-width: 0;
 }
 
@@ -221,6 +220,7 @@ a:hover {
   min-height: var(--head-h);
 }
 .site-head .name {
+  white-space: nowrap;
   font-weight: 600;
   color: var(--ink);
   text-decoration: none;
@@ -254,8 +254,21 @@ a:hover {
   display: flex;
   gap: 0.5rem;
 }
+.site-menu {
+  order: 1;
+}
+.head-resume {
+  display: none;
+}
+.site-head-compact .head-resume {
+  display: inline-flex;
+}
+.head-resume {
+  order: 2;
+}
 .menu-btn {
   display: none;
+  order: 3;
 }
 
 /* ---------- buttons and form controls ---------- */
@@ -445,33 +458,6 @@ input[type="range"]:focus-visible::-moz-range-thumb {
     width: 1.4rem;
     height: 1.4rem;
   }
-}
-
-/* ---------- intro ---------- */
-
-.intro {
-  padding-top: clamp(1.5rem, 6vw, 4.5rem);
-}
-.intro h1 {
-  font-size: clamp(2rem, 0.9rem + 4.6vw, var(--s5));
-  line-height: 1.04;
-  font-weight: 350;
-  font-variation-settings: "opsz" 72;
-  letter-spacing: -0.015em;
-  margin: 0 0 clamp(1rem, 2.5vw, 1.5rem);
-  max-width: 15ch;
-  text-wrap: balance;
-}
-.intro .deck {
-  font-size: clamp(1.06rem, 0.95rem + 0.5vw, var(--s1));
-  line-height: 1.5;
-  max-width: 34rem;
-  margin: 0 0 1rem;
-}
-.intro .role {
-  font-family: var(--ui);
-  color: var(--muted);
-  margin: 0;
 }
 
 /* ---------- figures ---------- */
@@ -1021,37 +1007,369 @@ form .full {
   grid-column: 1 / -1;
 }
 
-/* ---------- rail ---------- */
+/* ---------- front matter: the profile panel ---------- */
 
-.rail {
-  display: none;
+.front {
   font-family: var(--ui);
-  font-size: var(--s-1);
 }
-.rail-title {
+.front-inner {
+  padding-top: clamp(1.75rem, 6vw, 3rem);
+}
+.front-name {
+  font-family: var(--text);
+  font-size: clamp(2.3rem, 1.4rem + 3.4vw, 3.1rem);
+  font-weight: 380;
+  font-variation-settings: "opsz" 72;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.front-role {
+  margin: 0.55rem 0 0;
   color: var(--muted);
-  margin: 0 0 0.6rem;
+  font-size: 1rem;
 }
-.rail ol {
+.front-line {
+  font-family: var(--text);
+  font-style: italic;
+  font-size: clamp(1.15rem, 1rem + 0.5vw, 1.3rem);
+  line-height: 1.4;
+  margin: 1.1rem 0 0;
+  max-width: 22rem;
+  text-wrap: balance;
+}
+.avail {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  margin: 1.4rem 0 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--anomaly) 35%, var(--grid));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--anomaly) 6%, var(--sheet));
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+.avail > span:last-child {
+  display: grid;
+  gap: 0.15rem;
+}
+.avail b {
+  font-weight: 600;
+  color: var(--ink);
+}
+.avail > span:last-child > span {
+  color: var(--muted);
+}
+/* The site's signal color marks what is flagged. Here, that's availability. */
+.avail-dot {
+  position: relative;
+  flex: none;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-top: 0.35rem;
+  border-radius: 50%;
+  background: var(--anomaly);
+}
+.avail-dot::after {
+  content: "";
+  position: absolute;
+  inset: -0.3rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--anomaly);
+  opacity: 0;
+  animation: ping 2.4s ease-out infinite;
+}
+@keyframes ping {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  80%,
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+.front-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.front-actions .btn {
+  flex: 1;
+  justify-content: center;
+  font-size: 0.9rem;
+}
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+a.btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+a.btn.primary:hover {
+  background: var(--trace);
+  border-color: var(--trace);
+}
+
+.depth {
+  display: flex;
+  margin-top: 1rem;
+  padding: 3px;
+  gap: 3px;
+  border: 1px solid var(--grid);
+  border-radius: 6px;
+  background: var(--sheet);
+}
+.depth button {
+  flex: 1;
+  border: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  padding-inline: 0.5rem;
+}
+.depth button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.front-nav {
+  display: none;
+}
+.front-nav ol {
   list-style: none;
   margin: 0;
   padding: 0;
   border-left: 1px solid var(--grid);
 }
-.rail a {
+.front-nav a {
   display: block;
-  padding: 0.35rem 0 0.35rem 0.9rem;
+  padding: 0.3rem 0 0.3rem 0.9rem;
   margin-left: -1px;
   border-left: 2px solid transparent;
   color: var(--muted);
   text-decoration: none;
 }
-.rail a:hover {
+.front-nav a:hover {
   color: var(--ink);
 }
-.rail a[aria-current="true"] {
+.front-nav a[aria-current="true"] {
   color: var(--ink);
   border-left-color: var(--trace);
+}
+
+.front-links {
+  display: none;
+  gap: 1.1rem;
+  margin: 0;
+  font-size: var(--s-1);
+}
+.front-links a,
+.linkish {
+  color: var(--muted);
+}
+button.linkish {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+.front-links a:hover,
+.linkish:hover {
+  color: var(--ink);
+}
+
+/* ---------- overview ---------- */
+
+#overview {
+  padding-top: clamp(1.75rem, 5vw, 3rem);
+}
+#overview .deck {
+  font-size: clamp(1.06rem, 0.95rem + 0.5vw, var(--s1));
+  line-height: 1.55;
+  margin: 0;
+  max-width: 40rem;
+}
+.block-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  font-size: var(--s2);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: clamp(2.5rem, 6vw, 3.5rem) 0 0.4rem;
+}
+.block-title span {
+  font-family: var(--ui);
+  font-size: var(--s-1);
+  color: var(--muted);
+}
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.results li {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  column-gap: var(--gap);
+  align-items: baseline;
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--grid);
+}
+.results li:first-child {
+  border-top: 0;
+}
+.r-num {
+  font-family: var(--text);
+  font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2.1rem);
+  font-weight: 380;
+  font-variation-settings: "opsz" 60;
+  line-height: 1;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--trace);
+}
+.results p {
+  margin: 0;
+  max-width: 36rem;
+}
+.r-where {
+  display: inline-block;
+  margin-left: 0.3rem;
+  font-family: var(--ui);
+  font-size: var(--s-1);
+  color: var(--muted);
+}
+a.r-where {
+  color: var(--trace);
+}
+.now ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 40rem;
+}
+.now li {
+  position: relative;
+  padding: 0.35rem 0 0.35rem 1.4rem;
+}
+.now li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 0.95rem;
+  width: 0.55rem;
+  height: 2px;
+  background: var(--trace);
+}
+
+/* Outcome-first lead line on every entry */
+.tldr {
+  font-weight: 500;
+  color: var(--ink);
+}
+.entry .tldr {
+  margin: 0 0 0.7rem;
+}
+
+/* ---------- reading depth: the 30-second version ---------- */
+
+.skim-note {
+  display: none;
+  margin: clamp(1.25rem, 4vw, 2rem) 0 0;
+  padding: 0.7rem 0.9rem;
+  border-left: 3px solid var(--trace);
+  background: var(--sheet);
+  font-family: var(--ui);
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+:root[data-depth="skim"] .skim-note {
+  display: block;
+}
+:root[data-depth="skim"] main .figure,
+:root[data-depth="skim"] .more,
+:root[data-depth="skim"] .section-lede,
+:root[data-depth="skim"] #overview .deck {
+  display: none;
+}
+:root[data-depth="skim"] #overview .block-title:first-of-type {
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+}
+:root[data-depth="skim"] main > section:not(#overview) {
+  padding-top: clamp(2.25rem, 5vw, 3.5rem);
+}
+:root[data-depth="skim"] .entry {
+  padding-block: 0.9rem;
+}
+:root[data-depth="skim"] .entry .tldr {
+  margin-bottom: 0.3rem;
+  font-weight: 400;
+}
+:root[data-depth="skim"] .contact form {
+  display: none;
+}
+:root[data-depth="skim"] .contact {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* ---------- desktop: profile panel fixed on the left ---------- */
+
+@media (min-width: 64em) {
+  /* The profile panel replaces the header on desktop. */
+  .site-head-compact {
+    display: none;
+  }
+  .layout {
+    grid-template-columns: 18.5rem minmax(0, 1fr);
+    column-gap: clamp(2.5rem, 4.5vw, 5rem);
+  }
+  .front {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .front-inner {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(2.5rem, 7vh, 4.5rem) 0 2rem;
+  }
+  .front-nav {
+    display: block;
+    margin-top: clamp(1.5rem, 5vh, 2.75rem);
+  }
+  .front-links {
+    display: flex;
+    margin-top: auto;
+    padding-top: 1.5rem;
+  }
+  #overview {
+    padding-top: clamp(2.5rem, 7vh, 4.5rem);
+  }
+  .skim-note {
+    margin-top: clamp(2.5rem, 7vh, 4.5rem);
+  }
+  :root[data-depth="skim"] #overview {
+    padding-top: 1.25rem;
+  }
+}
+@media (min-width: 64em) and (max-height: 46em) {
+  .front-line {
+    display: none;
+  }
 }
 
 /* ---------- footer ---------- */
@@ -1076,20 +1394,6 @@ form .full {
 /* =================================================================== */
 /* Breakpoints                                                          */
 /* =================================================================== */
-
-/* Desktop: rail in the right gutter */
-@media (min-width: 80em) {
-  .page {
-    grid-template-columns: minmax(0, 1fr) 11rem;
-  }
-  .rail {
-    display: block;
-    position: sticky;
-    top: calc(var(--head-h) + 2rem);
-    align-self: start;
-    margin-top: clamp(1.5rem, 6vw, 4.5rem);
-  }
-}
 
 /* Tablets: diagram runs top to bottom; playground panes stack */
 @media (max-width: 64em) {
@@ -1174,6 +1478,14 @@ form .full {
 
 /* Phones: one column everywhere, full-width controls */
 @media (max-width: 40em) {
+  .results li {
+    grid-template-columns: 4.6rem minmax(0, 1fr);
+    column-gap: 0.9rem;
+  }
+  .r-where {
+    display: block;
+    margin: 0.2rem 0 0;
+  }
   .entry,
   .compact li,
   .quote,
@@ -1259,12 +1571,12 @@ form .full {
   .figure canvas {
     height: min(13rem, 62vh);
   }
-  .intro {
-    padding-top: 1rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .avail-dot::after {
+    animation: none;
+  }
   html {
     scroll-behavior: auto;
   }
@@ -1278,7 +1590,9 @@ form .full {
 @media print {
   .figure,
   .site-head,
-  .rail,
+  .depth,
+  .front-nav,
+  .skim-note,
   #contact form {
     display: none;
   }

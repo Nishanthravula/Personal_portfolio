@@ -1,19 +1,20 @@
-// The light/dark switch.
+// The light/dark switch and the reading-depth switch.
 
 (() => {
   "use strict";
 
   const root = document.documentElement;
-  const themeBtn = document.getElementById("theme-toggle");
+  const themeBtns = [...document.querySelectorAll("[data-theme-toggle], #theme-toggle")];
   const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
 
   const currentTheme = () => root.getAttribute("data-theme") || (systemDark.matches ? "dark" : "light");
 
   function syncThemeButton() {
-    if (!themeBtn) return;
     const next = currentTheme() === "dark" ? "light" : "dark";
-    themeBtn.textContent = next === "dark" ? "Dark" : "Light";
-    themeBtn.setAttribute("aria-label", `Switch to ${next} theme`);
+    themeBtns.forEach((b) => {
+      b.textContent = next === "dark" ? "Dark" : "Light";
+      b.setAttribute("aria-label", `Switch to ${next} theme`);
+    });
     const meta = document.querySelectorAll('meta[name="theme-color"]');
     meta.forEach((m) => {
       if (root.hasAttribute("data-theme")) m.setAttribute("content", currentTheme() === "dark" ? "#10161f" : "#eef1f4");
@@ -32,9 +33,44 @@
     document.dispatchEvent(new Event("themechange"));
   }
 
-  themeBtn?.addEventListener("click", toggleTheme);
+  themeBtns.forEach((b) => b.addEventListener("click", toggleTheme));
   systemDark.addEventListener?.("change", syncThemeButton);
   syncThemeButton();
+
+  // ---- reading depth: "Full story" or the "30-second version" ----
+  const depthBtns = [...document.querySelectorAll("[data-depth]")];
+  const syncDepth = () => {
+    const d = root.getAttribute("data-depth") === "skim" ? "skim" : "full";
+    depthBtns.forEach((b) => b.hasAttribute("aria-pressed") && b.setAttribute("aria-pressed", String(b.dataset.depth === d)));
+  };
+  function setDepth(d) {
+    if (d === "skim") root.setAttribute("data-depth", "skim");
+    else root.removeAttribute("data-depth");
+    try {
+      localStorage.setItem("depth", d);
+    } catch (e) {
+      /* not persisted */
+    }
+    // Keep ?view= in the address in step, so a copied link opens the same version.
+    try {
+      const url = new URL(location.href);
+      if (url.searchParams.has("view")) {
+        url.searchParams.set("view", d);
+        history.replaceState(null, "", url);
+      }
+    } catch (e) {
+      /* ignore */
+    }
+    syncDepth();
+    // Land at the top of the page so the change is visible.
+    window.scrollTo({ top: 0, behavior: "auto" });
+    document.dispatchEvent(new Event("depthchange"));
+  }
+  depthBtns.forEach((b) => b.addEventListener("click", () => setDepth(b.dataset.depth)));
+  syncDepth();
+
+  // Buttons that print the page (the résumé's "Save as PDF").
+  document.querySelectorAll("[data-print]").forEach((b) => b.addEventListener("click", () => window.print()));
 
 })();
 
@@ -96,8 +132,8 @@
     });
   }
 
-  // Highlight the current section in the rail and the header.
-  const links = [...document.querySelectorAll('.rail a, .site-head nav a')];
+  // Highlight the current section in the profile panel and the header.
+  const links = [...document.querySelectorAll(".front-nav a, .site-head nav a")];
   const sections = [...new Set(links.map((a) => a.getAttribute("href")))]
     .map((h) => document.querySelector(h))
     .filter(Boolean);
