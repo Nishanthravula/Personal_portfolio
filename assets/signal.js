@@ -109,7 +109,8 @@
   }
 
   function tokens() {
-    const cs = getComputedStyle(document.documentElement);
+    // Read colors from the canvas itself, so a section can restyle the chart (the blue hero does).
+    const cs = getComputedStyle(canvas);
     return {
       trace: cs.getPropertyValue("--trace").trim(),
       anomaly: cs.getPropertyValue("--anomaly").trim(),

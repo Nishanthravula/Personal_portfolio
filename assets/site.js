@@ -1,4 +1,4 @@
-// The light/dark switch and the reading-depth switch.
+// The light/dark switch and the case-study dialogs.
 
 (() => {
   "use strict";
@@ -37,37 +37,42 @@
   systemDark.addEventListener?.("change", syncThemeButton);
   syncThemeButton();
 
-  // ---- reading depth: "Full story" or the "30-second version" ----
-  const depthBtns = [...document.querySelectorAll("[data-depth]")];
-  const syncDepth = () => {
-    const d = root.getAttribute("data-depth") === "skim" ? "skim" : "full";
-    depthBtns.forEach((b) => b.hasAttribute("aria-pressed") && b.setAttribute("aria-pressed", String(b.dataset.depth === d)));
-  };
-  function setDepth(d) {
-    if (d === "skim") root.setAttribute("data-depth", "skim");
-    else root.removeAttribute("data-depth");
-    try {
-      localStorage.setItem("depth", d);
-    } catch (e) {
-      /* not persisted */
-    }
-    // Keep ?view= in the address in step, so a copied link opens the same version.
-    try {
-      const url = new URL(location.href);
-      if (url.searchParams.has("view")) {
-        url.searchParams.set("view", d);
-        history.replaceState(null, "", url);
-      }
-    } catch (e) {
-      /* ignore */
-    }
-    syncDepth();
-    // Land at the top of the page so the change is visible.
-    window.scrollTo({ top: 0, behavior: "auto" });
-    document.dispatchEvent(new Event("depthchange"));
+  // ---- case studies: project tiles open a dialog; #case-name links open it directly ----
+  const cases = [...document.querySelectorAll("dialog.case")];
+  let opener = null;
+  function openCase(name, from) {
+    const d = document.getElementById(`case-${name}`);
+    if (!d || d.open) return;
+    opener = from || null;
+    d.showModal();
+    d.querySelector(".case-body").scrollTop = 0;
+    if (location.hash !== `#${name}`) history.pushState(null, "", `#${name}`);
   }
-  depthBtns.forEach((b) => b.addEventListener("click", () => setDepth(b.dataset.depth)));
-  syncDepth();
+  function closeCase(d) {
+    if (d.open) d.close();
+  }
+  document.querySelectorAll("[data-case]").forEach((b) => b.addEventListener("click", () => openCase(b.dataset.case, b)));
+  cases.forEach((d) => {
+    d.querySelector(".case-close")?.addEventListener("click", () => closeCase(d));
+    // click on the dimmed backdrop closes
+    d.addEventListener("click", (e) => {
+      if (e.target === d) closeCase(d);
+    });
+    d.addEventListener("close", () => {
+      if (location.hash === `#${d.id.replace("case-", "")}`) history.pushState(null, "", location.pathname + location.search);
+      opener?.focus({ preventScroll: true });
+      opener = null;
+      document.documentElement.style.overflow = "";
+    });
+    d.addEventListener("toggle", () => (document.documentElement.style.overflow = d.open ? "hidden" : ""));
+  });
+  const fromHash = () => {
+    const name = location.hash.slice(1);
+    cases.forEach((d) => d.open && d.id !== `case-${name}` && d.close());
+    if (document.getElementById(`case-${name}`)) openCase(name);
+  };
+  window.addEventListener("popstate", fromHash);
+  fromHash();
 
   // Buttons that print the page (the résumé's "Save as PDF").
   document.querySelectorAll("[data-print]").forEach((b) => b.addEventListener("click", () => window.print()));
@@ -132,8 +137,8 @@
     });
   }
 
-  // Highlight the current section in the profile panel and the header.
-  const links = [...document.querySelectorAll(".front-nav a, .site-head nav a")];
+  // Highlight the current section in the header.
+  const links = [...document.querySelectorAll(".site-head nav a")];
   const sections = [...new Set(links.map((a) => a.getAttribute("href")))]
     .map((h) => document.querySelector(h))
     .filter(Boolean);

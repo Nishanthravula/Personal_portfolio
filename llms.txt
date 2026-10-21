@@ -13,10 +13,10 @@ Contact: nishanth.ravula@outlook.com · https://www.linkedin.com/in/ravula-nisha
 
 ## Selected work
 
-- [RSTAD](https://nishanthravula.netlify.app/#research): self-supervised anomaly detector for retail time series (Transformer masked autoencoder, dual-branch scoring with a kNN memory bank). Paper in preparation.
+- [RSTAD](https://nishanthravula.netlify.app/#rstad): self-supervised anomaly detector for retail time series (Transformer masked autoencoder, dual-branch scoring with a kNN memory bank). Paper in preparation.
 - [Responsible AI audits](https://github.com/Nishanthravula/responsible-ai-audits): six published audits of AI systems against the EU AI Act, GDPR and NIST AI RMF.
-- [mcp-guardrail](https://nishanthravula.netlify.app/#work): open-source stdio proxy that redacts secrets and personal data from Model Context Protocol tool results.
-- [Snapshot analytical layer](https://nishanthravula.netlify.app/#work): DuckDB snapshots over partitioned Parquet served through FastAPI.
+- [mcp-guardrail](https://nishanthravula.netlify.app/#guard): open-source stdio proxy that redacts secrets and personal data from Model Context Protocol tool results.
+- [Snapshot analytical layer](https://nishanthravula.netlify.app/#serve): DuckDB snapshots over partitioned Parquet served through FastAPI.
 
 ## Education
 
@@ -27,5 +27,4 @@ Contact: nishanth.ravula@outlook.com · https://www.linkedin.com/in/ravula-nisha
 ## Links
 
 - [Full site](https://nishanthravula.netlify.app/)
-- [30-second version](https://nishanthravula.netlify.app/?view=skim)
 - [Résumé](https://nishanthravula.netlify.app/resume/) ([PDF](https://nishanthravula.netlify.app/resume.pdf))
