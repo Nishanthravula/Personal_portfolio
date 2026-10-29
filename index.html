@@ -10,9 +10,8 @@
     />
     <meta name="author" content="Nishanth Ravula" />
     <link rel="canonical" href="https://nishanthravula.netlify.app/" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0b0e1f" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#08090d" />
 
     <meta property="og:type" content="profile" />
     <meta property="og:title" content="Nishanth Ravula · Anomaly detection and ML systems" />
@@ -29,13 +28,13 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <link rel="preload" href="/assets/fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/assets/fonts/instrument-sans.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="/assets/site.css?v=1cbe5b3304" />
-    <script src="/assets/theme.js?v=046b33d248"></script>
+    <link rel="preload" href="/assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="/assets/site.css?v=b8aa510a2d" />
+    <script src="/assets/theme.js?v=32655ac0b0"></script>
+    <script src="/assets/ambient.js?v=490b074067" defer></script>
     <script src="/assets/signal.js?v=8cf79be833" defer></script>
     <script src="/assets/figures.js?v=457213f7b7" defer></script>
-    <script src="/assets/site.js?v=6f643fd24e" defer></script>
+    <script src="/assets/site.js?v=7e73e30dbe" defer></script>
 
     <script type="application/ld+json">
       {
@@ -67,22 +66,33 @@
   <body>
     <a class="skip" href="#main">Skip to content</a>
 
+    <div class="backdrop" aria-hidden="true">
+      <canvas id="ambient"></canvas>
+      <div class="spot"></div>
+      <div class="grain"></div>
+    </div>
+    <div class="progress" id="progress" aria-hidden="true"></div>
+
     <header class="site-head">
       <div class="wrap head-inner">
-        <a class="logo" href="/"><span class="logo-dot" aria-hidden="true"></span>Nishanth Ravula</a>
+        <a class="logo" href="/">Nishanth<span class="logo-dot" aria-hidden="true"></span></a>
         <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="site-menu">Menu</button>
         <div class="site-menu" id="site-menu">
           <nav aria-label="Site">
             <ul>
-              <li><a href="#work">Work</a></li>
-              <li><a href="#experience">Experience</a></li>
               <li><a href="#about">About</a></li>
+              <li><a href="#experience">Experience</a></li>
+              <li><a href="#work">Work</a></li>
+              <li><a href="#skills">Skills</a></li>
               <li><a href="#contact">Contact</a></li>
             </ul>
           </nav>
           <div class="tools">
-            <button type="button" class="ghost" data-theme-toggle>Dark</button>
-            <a class="btn blue" href="/resume/">Résumé</a>
+            <button type="button" class="icon-btn" data-theme-toggle aria-label="Switch theme">
+              <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" /><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" /></svg>
+              <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.6A8.2 8.2 0 0 1 9.4 4a8.2 8.2 0 1 0 10.6 10.6Z" /></svg>
+            </button>
+            <a class="btn small" href="/resume.pdf" download>Résumé <span aria-hidden="true">↓</span></a>
           </div>
         </div>
       </div>
@@ -92,104 +102,251 @@
       <section class="hero" aria-labelledby="hero-title">
         <div class="wrap hero-grid">
           <div class="hero-copy">
-            <p class="pill"><span class="pill-dot" aria-hidden="true"></span>Open to ML and software engineering roles</p>
-            <h1 id="hero-title">I teach machines to notice when data stops making sense.</h1>
-            <p class="hero-lede">
-              I'm Nishanth Ravula, a software and ML engineer. I build anomaly detection and data systems
-              for retail at Dollar General, research self-supervised models as a PhD student in AI, and
-              audit AI systems so their decisions stay fair.
+            <p class="status reveal"><span class="status-dot" aria-hidden="true"></span>Open to ML and software engineering roles</p>
+            <h1 id="hero-title" class="reveal">
+              Hi, I'm Nishanth.
+              <span class="h1-line">I build ML systems that notice when data goes wrong.</span>
+            </h1>
+            <p class="hero-lede reveal">
+              Software and ML engineer at <b>Dollar General</b>, building anomaly detection and data systems for
+              retail ordering across the store network. PhD student in AI researching self-supervised time-series
+              models. Earlier, deep learning for autonomous-vehicle perception at <b>Tata Consultancy Services</b>.
             </p>
-            <div class="hero-actions">
-              <a class="btn sun" href="#work">See my work</a>
-              <a class="btn on-blue" href="/resume/">Résumé</a>
-              <a class="hero-mail" href="mailto:nishanth.ravula@outlook.com">nishanth.ravula@outlook.com</a>
+            <div class="hero-actions reveal">
+              <a class="btn primary" href="#experience">Explore my experience <span aria-hidden="true">↓</span></a>
+              <a class="btn" href="/resume.pdf" download>Download résumé <span aria-hidden="true">↓</span></a>
+              <a class="btn ghost" href="https://www.linkedin.com/in/ravula-nishanth-0716/">LinkedIn <span aria-hidden="true">↗</span></a>
+              <a class="btn ghost" href="https://github.com/Nishanthravula">GitHub <span aria-hidden="true">↗</span></a>
             </div>
           </div>
 
-          <figure class="hero-chart" aria-labelledby="hero-chart-cap">
+          <figure class="hero-chart glass reveal" aria-labelledby="hero-chart-cap">
+            <div class="chart-head">
+              <span class="live"><span class="live-dot" aria-hidden="true"></span>Live detector</span>
+              <span class="mono">robust z-score · seasonal</span>
+            </div>
             <canvas id="signal" role="img"
               aria-label="A live line chart of a synthetic, seasonal demand signal with an anomaly score track below it. Points whose score crosses the dashed threshold are flagged."></canvas>
             <figcaption id="hero-chart-cap">
-              <span><b>Live:</b> a detector watching a synthetic demand signal. <span id="readout" class="readout"></span></span>
-              <button type="button" id="inject" class="on-blue">Inject an anomaly</button>
+              <span>A detector watching a synthetic demand signal. <span id="readout" class="readout"></span></span>
+              <button type="button" id="inject">Inject an anomaly</button>
             </figcaption>
           </figure>
         </div>
+
+        <div class="wrap across reveal">
+          <p class="mono">Experience across</p>
+          <ul>
+            <li class="wm wm-dg">Dollar General</li>
+            <li class="wm wm-tcs">Tata Consultancy Services</li>
+            <li class="wm wm-ub">University at Buffalo</li>
+            <li class="wm wm-hw">Halfway</li>
+          </ul>
+        </div>
+        <a class="scroll-hint" href="#about"><span>Scroll to explore</span><i aria-hidden="true"></i></a>
       </section>
 
-      <section class="impact" aria-label="Selected results">
-        <div class="wrap">
-          <ul class="impact-list">
-            <li><b>40%</b><span>fewer data errors</span><small>Dollar General</small></li>
-            <li><b>20%</b><span>higher model accuracy</span><small>Tata Consultancy Services</small></li>
-            <li><b>85%</b><span>less error-rate disparity</span><small>AI fairness audit</small></li>
-            <li><b>6</b><span>published AI audits</span><small>On GitHub</small></li>
-          </ul>
+      <section id="about" class="chapter" aria-labelledby="about-title">
+        <div class="wrap about-grid">
+          <div>
+            <p class="eyebrow reveal"><span>01</span> / About me</p>
+            <h2 id="about-title" class="reveal">I like problems where the data is messy and <span class="accent">the stakes are real.</span></h2>
+            <div class="prose reveal">
+              <p>
+                Most of my work sits where machine learning meets production systems: catching problems in retail
+                data before they reach a store, making AI agents safer to run, and checking that models treat
+                people fairly.
+              </p>
+              <p>
+                I started out building React front ends, moved into deep learning for autonomous vehicles, and now
+                work on data systems and anomaly detection for a retailer with stores across the country. Alongside
+                that, I'm a PhD student in Artificial Intelligence, writing up RSTAD and publishing my responsible
+                AI audits as I go.
+              </p>
+            </div>
+            <ul class="edu reveal">
+              <li><b>PhD, Artificial Intelligence</b><span>University of the Cumberlands · In progress</span></li>
+              <li><b>MS, Computer Science and Engineering</b><span>University at Buffalo, SUNY · 2022 to 2023</span></li>
+              <li><b>BTech, Computer Science and Engineering</b><span>Sri Indu College of Engineering and Technology · 2017 to 2021</span></li>
+            </ul>
+          </div>
+
+          <aside class="about-side reveal" aria-label="Results at a glance">
+            <ul class="metrics glass">
+              <li><b>40%</b><span>fewer user-side data errors at Dollar General</span></li>
+              <li><b>20%</b><span>higher perception-model accuracy at TCS</span></li>
+              <li><b>85%</b><span>less error-rate disparity in a fairness audit</span></li>
+              <li><b>6</b><span>published audits of AI systems</span></li>
+            </ul>
+            <figure class="callout glass">
+              <blockquote>
+                <p>
+                  “Nishanth is an amazing person to work with. The way he quickly adapts to project requirements is
+                  amazing. He has superb problem-solving skills and is very flexible.”
+                </p>
+              </blockquote>
+              <figcaption><b>Pankaj Singh</b> · worked with Nishanth for a year at Tata Consultancy Services</figcaption>
+            </figure>
+          </aside>
         </div>
       </section>
 
-      <section id="work" class="band" aria-labelledby="work-title">
+      <section id="experience" class="chapter" aria-labelledby="experience-title">
         <div class="wrap">
-          <div class="band-head">
-            <h2 id="work-title">Selected work</h2>
-            <p>Research and engineering that make data and AI easier to trust. Open any project for the full story and a live demo.</p>
+          <div class="chapter-head">
+            <p class="eyebrow reveal"><span>02</span> / Experience</p>
+            <h2 id="experience-title" class="reveal">From web front ends to <span class="accent">ML in production.</span></h2>
+            <p class="lead reveal">Newest first: retail data systems, then autonomous-vehicle perception, then the web, where I started.</p>
           </div>
 
-          <div class="tiles">
-            <article class="tile tile-rstad">
-              <div class="tile-art" aria-hidden="true">
+          <ol class="career" id="career">
+            <li class="job reveal">
+              <span class="node" aria-hidden="true"></span>
+              <div class="job-meta">
+                <p class="chap mono">01 / 04</p>
+                <p class="company">Dollar General</p>
+                <p class="role">Software Developer</p>
+                <p class="when mono">April 2024 to present</p>
+              </div>
+              <div class="job-body glass">
+                <p class="job-eyebrow mono">Retail data · Anomaly detection</p>
+                <h3>Catching bad data before it reaches a store.</h3>
+                <p>
+                  I build anomaly detection for retail ordering data across the store network and tune the Oracle
+                  workloads behind the ordering pipeline, rewriting queries for correctness and speed.
+                </p>
+                <ul class="outcomes">
+                  <li><b>40%</b><span>fewer user-side data errors after adding JSON-schema validation to MongoDB inputs</span></li>
+                  <li><b>DuckDB</b><span>snapshot layer prototyped with FastAPI to take dashboard load off production databases</span></li>
+                  <li><b>CI/CD</b><span>pipelines that keep Oracle and MongoDB in sync and ship them</span></li>
+                </ul>
+                <ul class="tags"><li>Oracle</li><li>PL/SQL</li><li>MongoDB</li><li>Python</li><li>DuckDB</li><li>FastAPI</li><li>Docker</li></ul>
+              </div>
+            </li>
+
+            <li class="job reveal">
+              <span class="node" aria-hidden="true"></span>
+              <div class="job-meta">
+                <p class="chap mono">02 / 04</p>
+                <p class="company">Tata Consultancy Services</p>
+                <p class="role">Assistant System Engineer</p>
+                <p class="when mono">July 2021 to July 2022</p>
+              </div>
+              <div class="job-body glass">
+                <p class="job-eyebrow mono">Deep learning · Autonomous vehicles</p>
+                <h3>Made perception models 20% more accurate.</h3>
+                <p>
+                  I built and trained deep learning models for autonomous-vehicle perception in TensorFlow, and
+                  owned the training data that fed them.
+                </p>
+                <ul class="outcomes">
+                  <li><b>20%</b><span>higher model accuracy from better training data, regularization and tuning</span></li>
+                  <li><b>QC</b><span>led the annotation team and designed the quality-control process for the training set</span></li>
+                  <li><b>Azure ML</b><span>deployed models and managed the ML lifecycle</span></li>
+                </ul>
+                <ul class="tags"><li>TensorFlow</li><li>Python</li><li>Azure ML</li></ul>
+              </div>
+            </li>
+
+            <li class="job reveal">
+              <span class="node" aria-hidden="true"></span>
+              <div class="job-meta">
+                <p class="chap mono">03 / 04</p>
+                <p class="company">Halfway</p>
+                <p class="role">Web Developer</p>
+                <p class="when mono">February 2020 to June 2021</p>
+              </div>
+              <div class="job-body glass">
+                <p class="job-eyebrow mono">Web · Front end</p>
+                <h3>Made the product's pages 35% faster.</h3>
+                <p>I built the React and Next.js front end, with Google OAuth sign-in and the Google Maps APIs.</p>
+                <ul class="outcomes">
+                  <li><b>35%</b><span>faster pages from component-level optimization and code-splitting</span></li>
+                  <li><b>OAuth</b><span>Google sign-in and Maps integrated into the product</span></li>
+                </ul>
+                <ul class="tags"><li>React</li><li>Next.js</li><li>Redux</li></ul>
+              </div>
+            </li>
+
+            <li class="job reveal">
+              <span class="node" aria-hidden="true"></span>
+              <div class="job-meta">
+                <p class="chap mono">04 / 04</p>
+                <p class="company">PrimeFort</p>
+                <p class="role">Frontend Developer intern</p>
+                <p class="when mono">October 2019 to January 2020</p>
+              </div>
+              <div class="job-body glass">
+                <p class="job-eyebrow mono">Internship</p>
+                <h3>Where it started.</h3>
+                <p>I built React interfaces and reusable components for client websites.</p>
+                <ul class="tags"><li>React</li><li>JavaScript</li></ul>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="work" class="chapter" aria-labelledby="work-title">
+        <div class="wrap">
+          <div class="chapter-head">
+            <p class="eyebrow reveal"><span>03</span> / Selected work</p>
+            <h2 id="work-title" class="reveal">Research and tools that make <span class="accent">data and AI easier to trust.</span></h2>
+            <p class="lead reveal">Open any project for the full story. Most come with a live demo you can play with.</p>
+          </div>
+
+          <div class="projects">
+            <article class="project p-rstad glass reveal">
+              <div class="p-art" aria-hidden="true">
                 <svg viewBox="0 0 400 200" preserveAspectRatio="none">
                   <path class="art-line" d="M0 120 C 30 80, 50 80, 75 115 S 120 150, 150 115 S 195 80, 220 112 S 255 140, 270 120 L 282 40 L 294 122 C 310 140, 330 90, 355 108 S 385 140, 400 118" />
-                  <circle class="art-flag" cx="282" cy="40" r="10" />
+                  <circle class="art-flag" cx="282" cy="40" r="8" />
                 </svg>
               </div>
-              <div class="tile-body">
-                <p class="tile-kind">Research · Paper in preparation</p>
-                <h3>RSTAD</h3>
-                <p>A self-supervised anomaly detector for retail time series that catches what memory-based models reconstruct too well and miss.</p>
-                <button type="button" class="tile-open" data-case="rstad">Read the case study</button>
-              </div>
+              <p class="p-kind mono">Research · Paper in preparation</p>
+              <h3>RSTAD</h3>
+              <p>A self-supervised anomaly detector for retail time series that catches what memory-based models reconstruct too well and miss.</p>
+              <ul class="tags"><li>PyTorch</li><li>Transformers</li><li>kNN memory</li></ul>
+              <button type="button" class="p-open" data-case="rstad">Open the case study <span aria-hidden="true">→</span></button>
             </article>
 
-            <article class="tile tile-audit">
-              <div class="tile-art" aria-hidden="true">
+            <article class="project p-audit glass reveal">
+              <div class="p-art" aria-hidden="true">
                 <svg viewBox="0 0 400 200" preserveAspectRatio="none">
                   <path class="art-a" d="M0 180 C 80 180, 110 40, 170 40 S 260 180, 340 180" />
                   <path class="art-b" d="M60 180 C 140 180, 170 60, 230 60 S 320 180, 400 180" />
                   <line class="art-t" x1="215" y1="20" x2="215" y2="190" />
                 </svg>
               </div>
-              <div class="tile-body">
-                <p class="tile-kind">Responsible AI · 6 audits</p>
-                <h3>AI audits</h3>
-                <p>Hands-on audits of real AI systems. One cut a recidivism model's error-rate disparity by 85%.</p>
-                <button type="button" class="tile-open" data-case="audit">Read the case study</button>
-              </div>
+              <p class="p-kind mono">Responsible AI · 6 audits</p>
+              <h3>AI audits</h3>
+              <p>Hands-on audits of real AI systems. One cut a recidivism model's error-rate disparity by 85%.</p>
+              <ul class="tags"><li>Fairness</li><li>EU AI Act</li><li>GDPR</li></ul>
+              <button type="button" class="p-open" data-case="audit">Open the case study <span aria-hidden="true">→</span></button>
             </article>
 
-            <article class="tile tile-guard">
-              <div class="tile-art" aria-hidden="true">
+            <article class="project p-guard glass reveal">
+              <div class="p-art" aria-hidden="true">
                 <svg viewBox="0 0 400 200" preserveAspectRatio="none">
-                  <rect class="art-code" x="30" y="30" width="120" height="14" rx="7" />
-                  <rect class="art-hide" x="160" y="30" width="150" height="14" rx="7" />
-                  <rect class="art-code" x="60" y="66" width="90" height="14" rx="7" />
-                  <rect class="art-code" x="160" y="66" width="70" height="14" rx="7" />
-                  <rect class="art-hide" x="240" y="66" width="110" height="14" rx="7" />
-                  <rect class="art-code" x="60" y="102" width="160" height="14" rx="7" />
-                  <rect class="art-code" x="30" y="138" width="80" height="14" rx="7" />
-                  <rect class="art-hide" x="120" y="138" width="190" height="14" rx="7" />
+                  <rect class="art-code" x="30" y="40" width="120" height="14" rx="7" />
+                  <rect class="art-hide" x="160" y="40" width="150" height="14" rx="7" />
+                  <rect class="art-code" x="60" y="76" width="90" height="14" rx="7" />
+                  <rect class="art-code" x="160" y="76" width="70" height="14" rx="7" />
+                  <rect class="art-hide" x="240" y="76" width="110" height="14" rx="7" />
+                  <rect class="art-code" x="60" y="112" width="160" height="14" rx="7" />
+                  <rect class="art-code" x="30" y="148" width="80" height="14" rx="7" />
+                  <rect class="art-hide" x="120" y="148" width="190" height="14" rx="7" />
                 </svg>
               </div>
-              <div class="tile-body">
-                <p class="tile-kind">Open source · TypeScript</p>
-                <h3>mcp-guardrail</h3>
-                <p>A proxy that strips secrets and personal data from AI agents' tool results before the model sees them.</p>
-                <button type="button" class="tile-open" data-case="guard">Read the case study</button>
-              </div>
+              <p class="p-kind mono">Open source · TypeScript</p>
+              <h3>mcp-guardrail</h3>
+              <p>A proxy that strips secrets and personal data from AI agents' tool results before the model sees them.</p>
+              <ul class="tags"><li>TypeScript</li><li>MCP</li><li>CLI</li></ul>
+              <button type="button" class="p-open" data-case="guard">Open the case study <span aria-hidden="true">→</span></button>
             </article>
 
-            <article class="tile tile-serve">
-              <div class="tile-art" aria-hidden="true">
+            <article class="project p-serve glass reveal">
+              <div class="p-art" aria-hidden="true">
                 <svg viewBox="0 0 400 200" preserveAspectRatio="none">
                   <rect class="art-file" x="30" y="30" width="54" height="34" rx="6" />
                   <rect class="art-file" x="30" y="83" width="54" height="34" rx="6" />
@@ -197,165 +354,138 @@
                   <path class="art-flow" d="M90 47 C 150 47, 150 100, 200 100 M90 100 L 200 100 M90 153 C 150 153, 150 100, 200 100" />
                   <rect class="art-db" x="205" y="64" width="80" height="72" rx="10" />
                   <path class="art-flow" d="M290 100 L 370 100" />
-                  <circle class="art-dot" cx="372" cy="100" r="9" />
+                  <circle class="art-dot" cx="372" cy="100" r="8" />
                 </svg>
               </div>
-              <div class="tile-body">
-                <p class="tile-kind">Data infrastructure</p>
-                <h3>Snapshot analytical layer</h3>
-                <p>DuckDB snapshots that move heavy scans offline and take dashboard load off production databases.</p>
-                <button type="button" class="tile-open" data-case="serve">Read the case study</button>
-              </div>
+              <p class="p-kind mono">Data infrastructure</p>
+              <h3>Snapshot analytical layer</h3>
+              <p>DuckDB snapshots that move heavy scans offline and take dashboard load off production databases.</p>
+              <ul class="tags"><li>DuckDB</li><li>Parquet</li><li>FastAPI</li></ul>
+              <button type="button" class="p-open" data-case="serve">Open the case study <span aria-hidden="true">→</span></button>
             </article>
 
-            <article class="tile tile-agents">
-              <div class="tile-art" aria-hidden="true">
+            <article class="project p-agents glass reveal">
+              <div class="p-art" aria-hidden="true">
                 <svg viewBox="0 0 400 200" preserveAspectRatio="none">
                   <path class="art-link" d="M80 100 L 200 50 M80 100 L 200 150 M200 50 L 320 100 M200 150 L 320 100" />
-                  <circle class="art-node" cx="80" cy="100" r="16" />
-                  <circle class="art-node" cx="200" cy="50" r="16" />
-                  <circle class="art-node" cx="200" cy="150" r="16" />
-                  <circle class="art-check" cx="320" cy="100" r="22" />
-                  <path class="art-tick" d="M309 101 L 317 109 L 332 92" />
+                  <circle class="art-node" cx="80" cy="100" r="14" />
+                  <circle class="art-node" cx="200" cy="50" r="14" />
+                  <circle class="art-node" cx="200" cy="150" r="14" />
+                  <circle class="art-check" cx="320" cy="100" r="20" />
+                  <path class="art-tick" d="M310 101 L 317 108 L 331 92" />
                 </svg>
               </div>
-              <div class="tile-body">
-                <p class="tile-kind">AI agents · Model Context Protocol</p>
-                <h3>Agent tooling</h3>
-                <p>A LinkedIn MCP server that never posts without confirmation, and a job-application agent that tailors a résumé to each posting.</p>
-                <button type="button" class="tile-open" data-case="agents">Read more</button>
-              </div>
+              <p class="p-kind mono">AI agents · Model Context Protocol</p>
+              <h3>Agent tooling</h3>
+              <p>A LinkedIn MCP server that never posts without confirmation, and a job-application agent that tailors a résumé to each posting.</p>
+              <ul class="tags"><li>TypeScript</li><li>React</li><li>OAuth 2.0</li></ul>
+              <button type="button" class="p-open" data-case="agents">Read more <span aria-hidden="true">→</span></button>
             </article>
           </div>
         </div>
       </section>
 
-      <section id="experience" class="band" aria-labelledby="experience-title">
+      <section id="skills" class="chapter" aria-labelledby="skills-title">
         <div class="wrap">
-          <div class="band-head">
-            <h2 id="experience-title">Experience</h2>
-            <p>From web interfaces to autonomous-vehicle ML to retail data systems.</p>
+          <div class="chapter-head">
+            <p class="eyebrow reveal"><span>04</span> / Technical skills</p>
+            <h2 id="skills-title" class="reveal">The tools I reach for, <span class="accent">from model to production.</span></h2>
           </div>
 
-          <ol class="timeline">
-            <li>
-              <p class="t-when">April 2024 to now</p>
-              <div class="t-body">
-                <h3>Software Developer <span>Dollar General</span></h3>
-                <p>Anomaly detection and Oracle performance for retail ordering across the store network. Cut user-side data errors by 40%.</p>
-                <details>
-                  <summary>Details</summary>
-                  <ul>
-                    <li>Build anomaly detection for retail ordering data across the store network.</li>
-                    <li>Tune and reconcile Oracle workloads behind the ordering pipeline, including query rewrites for correctness and speed.</li>
-                    <li>Prototyped a DuckDB and FastAPI analytical layer to take dashboard load off production databases.</li>
-                    <li>Introduced JSON-schema validation for MongoDB inputs, reducing user-side data errors by 40%.</li>
-                    <li>Keep Oracle and MongoDB in sync and maintain the CI/CD pipelines that ship it.</li>
-                  </ul>
-                </details>
-                <ul class="chips"><li>Oracle</li><li>PL/SQL</li><li>MongoDB</li><li>Python</li><li>DuckDB</li><li>FastAPI</li><li>Docker</li></ul>
-              </div>
-            </li>
-            <li>
-              <p class="t-when">July 2021 to July 2022</p>
-              <div class="t-body">
-                <h3>Assistant System Engineer <span>Tata Consultancy Services</span></h3>
-                <p>Deep learning for autonomous-vehicle perception. Raised model accuracy by 20%.</p>
-                <details>
-                  <summary>Details</summary>
-                  <ul>
-                    <li>Built and trained deep learning models for autonomous-vehicle perception in TensorFlow.</li>
-                    <li>Improved model accuracy by 20% through better training data, regularization and hyperparameter tuning.</li>
-                    <li>Led the data annotation team and designed the quality-control process behind the training set.</li>
-                    <li>Deployed models and managed the ML lifecycle on Azure ML.</li>
-                  </ul>
-                </details>
-                <ul class="chips"><li>TensorFlow</li><li>Python</li><li>Azure ML</li></ul>
-              </div>
-            </li>
-            <li>
-              <p class="t-when">February 2020 to June 2021</p>
-              <div class="t-body">
-                <h3>Web Developer <span>Halfway</span></h3>
-                <p>Built the React and Next.js front end with Google OAuth and Maps APIs. Made pages 35% faster.</p>
-                <ul class="chips"><li>React</li><li>Next.js</li><li>Redux</li></ul>
-              </div>
-            </li>
-            <li>
-              <p class="t-when">October 2019 to January 2020</p>
-              <div class="t-body">
-                <h3>Frontend Developer intern <span>PrimeFort</span></h3>
-                <p>Built React interfaces and reusable components for client websites.</p>
-              </div>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      <section id="about" class="band band-tint" aria-labelledby="about-title">
-        <div class="wrap about-grid">
-          <div>
-            <h2 id="about-title">About</h2>
-            <p class="about-lede">
-              I like problems where the data is messy and the stakes are real. Most of my work sits where
-              machine learning meets production systems: catching problems in retail data before they
-              reach a store, making AI agents safer to run, and checking that models treat people fairly.
-            </p>
-            <p>
-              Outside work I'm a PhD student in Artificial Intelligence, writing up RSTAD and publishing my
-              responsible AI audits as I go.
-            </p>
-
-            <h3 class="mini-title">Education</h3>
-            <ul class="edu">
-              <li><b>PhD, Artificial Intelligence</b><span>University of the Cumberlands · In progress</span></li>
-              <li><b>MS, Computer Science and Engineering</b><span>University at Buffalo, SUNY · 2022 to 2023</span></li>
-              <li><b>BTech, Computer Science and Engineering</b><span>Sri Indu College of Engineering and Technology · 2017 to 2021</span></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 class="mini-title">Tools I work with</h3>
-            <dl class="skills">
-              <div><dt>Machine learning</dt><dd><ul class="chips"><li>PyTorch</li><li>TensorFlow</li><li>scikit-learn</li><li>MLflow</li><li>Azure ML</li></ul></dd></div>
-              <div><dt>Data</dt><dd><ul class="chips"><li>Oracle</li><li>PL/SQL</li><li>DuckDB</li><li>Parquet</li><li>MongoDB</li><li>PostgreSQL</li></ul></dd></div>
-              <div><dt>Backend</dt><dd><ul class="chips"><li>Python</li><li>FastAPI</li><li>Flask</li><li>Django</li><li>Node.js</li></ul></dd></div>
-              <div><dt>Frontend</dt><dd><ul class="chips"><li>TypeScript</li><li>React</li><li>Next.js</li><li>Redux</li></ul></dd></div>
-              <div><dt>AI agents</dt><dd><ul class="chips"><li>Model Context Protocol</li><li>OAuth 2.0</li><li>LLM evaluation</li></ul></dd></div>
-              <div><dt>Delivery</dt><dd><ul class="chips"><li>Docker</li><li>Jenkins</li><li>CI/CD</li><li>Locust</li><li>GCP</li><li>Azure</li></ul></dd></div>
-              <div><dt>Governance</dt><dd><ul class="chips"><li>EU AI Act</li><li>GDPR</li><li>NIST AI RMF</li><li>Fairness metrics</li></ul></dd></div>
-            </dl>
-
-            <figure class="quote">
-              <blockquote>
-                <p>
-                  “Nishanth is an amazing person to work with. The way he quickly adapts to project
-                  requirements is amazing. He has superb problem-solving skills and is very flexible.”
-                </p>
-              </blockquote>
-              <figcaption><b>Pankaj Singh</b> · worked with Nishanth for a year at Tata Consultancy Services</figcaption>
-            </figure>
+          <div class="skill-grid">
+            <section class="skill glass reveal" aria-labelledby="sk-ml">
+              <header><span class="sk-dot" aria-hidden="true"></span><h3 id="sk-ml">Machine learning</h3><span class="sk-count mono">6</span></header>
+              <ul class="chips">
+                <li><img src="/assets/icons/pytorch.svg" alt="" width="16" height="16" />PyTorch</li>
+                <li><img src="/assets/icons/tensorflow.svg" alt="" width="16" height="16" />TensorFlow</li>
+                <li><img src="/assets/icons/scikitlearn.svg" alt="" width="16" height="16" />scikit-learn</li>
+                <li>MLflow</li>
+                <li><img src="/assets/icons/azure.svg" alt="" width="16" height="16" />Azure ML</li>
+                <li>Self-supervised learning</li>
+              </ul>
+            </section>
+            <section class="skill glass reveal" aria-labelledby="sk-data">
+              <header><span class="sk-dot" aria-hidden="true"></span><h3 id="sk-data">Data</h3><span class="sk-count mono">6</span></header>
+              <ul class="chips">
+                <li><img src="/assets/icons/oracle.svg" alt="" width="16" height="16" />Oracle · PL/SQL</li>
+                <li><img src="/assets/icons/duckdb.svg" alt="" width="16" height="16" />DuckDB</li>
+                <li>Parquet</li>
+                <li><img src="/assets/icons/mongodb.svg" alt="" width="16" height="16" />MongoDB</li>
+                <li><img src="/assets/icons/postgresql.svg" alt="" width="16" height="16" />PostgreSQL</li>
+                <li>Solr</li>
+              </ul>
+            </section>
+            <section class="skill glass reveal" aria-labelledby="sk-back">
+              <header><span class="sk-dot" aria-hidden="true"></span><h3 id="sk-back">Backend</h3><span class="sk-count mono">5</span></header>
+              <ul class="chips">
+                <li><img src="/assets/icons/python.svg" alt="" width="16" height="16" />Python</li>
+                <li><img src="/assets/icons/fastapi.svg" alt="" width="16" height="16" />FastAPI</li>
+                <li><img class="mono-icon" src="/assets/icons/flask.svg" alt="" width="16" height="16" />Flask</li>
+                <li><img class="mono-icon" src="/assets/icons/django.svg" alt="" width="16" height="16" />Django</li>
+                <li><img src="/assets/icons/nodejs.svg" alt="" width="16" height="16" />Node.js</li>
+              </ul>
+            </section>
+            <section class="skill glass reveal" aria-labelledby="sk-front">
+              <header><span class="sk-dot" aria-hidden="true"></span><h3 id="sk-front">Frontend</h3><span class="sk-count mono">5</span></header>
+              <ul class="chips">
+                <li><img src="/assets/icons/typescript.svg" alt="" width="16" height="16" />TypeScript</li>
+                <li><img src="/assets/icons/javascript.svg" alt="" width="16" height="16" />JavaScript</li>
+                <li><img src="/assets/icons/react.svg" alt="" width="16" height="16" />React</li>
+                <li><img class="mono-icon" src="/assets/icons/nextjs.svg" alt="" width="16" height="16" />Next.js</li>
+                <li><img src="/assets/icons/redux.svg" alt="" width="16" height="16" />Redux</li>
+              </ul>
+            </section>
+            <section class="skill glass reveal" aria-labelledby="sk-agents">
+              <header><span class="sk-dot" aria-hidden="true"></span><h3 id="sk-agents">AI agents</h3><span class="sk-count mono">3</span></header>
+              <ul class="chips">
+                <li>Model Context Protocol</li>
+                <li>OAuth 2.0</li>
+                <li>LLM evaluation</li>
+              </ul>
+            </section>
+            <section class="skill glass reveal" aria-labelledby="sk-ship">
+              <header><span class="sk-dot" aria-hidden="true"></span><h3 id="sk-ship">Delivery and cloud</h3><span class="sk-count mono">6</span></header>
+              <ul class="chips">
+                <li><img src="/assets/icons/docker.svg" alt="" width="16" height="16" />Docker</li>
+                <li><img src="/assets/icons/jenkins.svg" alt="" width="16" height="16" />Jenkins</li>
+                <li><img src="/assets/icons/git.svg" alt="" width="16" height="16" />Git · CI/CD</li>
+                <li>Locust</li>
+                <li><img src="/assets/icons/googlecloud.svg" alt="" width="16" height="16" />GCP</li>
+                <li><img src="/assets/icons/azure.svg" alt="" width="16" height="16" />Azure</li>
+              </ul>
+            </section>
+            <section class="skill skill-wide glass reveal" aria-labelledby="sk-gov">
+              <header><span class="sk-dot" aria-hidden="true"></span><h3 id="sk-gov">AI governance</h3><span class="sk-count mono">5</span></header>
+              <ul class="chips">
+                <li>EU AI Act</li>
+                <li>GDPR</li>
+                <li>NIST AI RMF</li>
+                <li>Fairness metrics</li>
+                <li>Algorithmic impact assessment</li>
+              </ul>
+            </section>
           </div>
         </div>
       </section>
 
-      <section id="contact" class="contact-band" aria-labelledby="contact-title">
+      <section id="contact" class="chapter contact" aria-labelledby="contact-title">
         <div class="wrap contact-grid">
           <div>
-            <h2 id="contact-title">Let's build something reliable together.</h2>
-            <p>
-              I'm looking for my next role in ML engineering, anomaly detection or applied AI, and I'm always
-              glad to talk about research collaborations.
+            <p class="eyebrow reveal"><span>05</span> / Contact</p>
+            <h2 id="contact-title" class="reveal">Let's build something <span class="accent">reliable.</span></h2>
+            <p class="lead reveal">
+              I'm looking for my next role in ML engineering, anomaly detection or applied AI, and I'm always glad
+              to talk about research collaborations. Based in Texas, open to relocation.
             </p>
-            <a class="btn sun big" href="mailto:nishanth.ravula@outlook.com">nishanth.ravula@outlook.com</a>
-            <ul class="contact-links">
-              <li><a href="https://www.linkedin.com/in/ravula-nishanth-0716/">LinkedIn</a></li>
-              <li><a href="https://github.com/Nishanthravula">GitHub</a></li>
-              <li><a href="/resume/">Résumé</a></li>
-              <li><a href="/resume.pdf" download>Résumé PDF</a></li>
-            </ul>
+            <div class="hero-actions reveal">
+              <a class="btn primary" href="mailto:nishanth.ravula@outlook.com">Email me <span aria-hidden="true">↗</span></a>
+              <a class="btn" href="https://www.linkedin.com/in/ravula-nishanth-0716/">LinkedIn <span aria-hidden="true">↗</span></a>
+              <a class="btn" href="https://github.com/Nishanthravula">GitHub <span aria-hidden="true">↗</span></a>
+              <a class="btn" href="/resume/">Résumé</a>
+            </div>
+            <p class="mail mono reveal"><a href="mailto:nishanth.ravula@outlook.com">nishanth.ravula@outlook.com</a></p>
           </div>
-          <div class="form-card">
+          <div class="form-card glass reveal">
             <h3>Or send a message</h3>
             <form name="contact" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="company">
               <input type="hidden" name="form-name" value="contact" />

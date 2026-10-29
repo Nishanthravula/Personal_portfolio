@@ -5,20 +5,18 @@
 
   const root = document.documentElement;
   const themeBtns = [...document.querySelectorAll("[data-theme-toggle], #theme-toggle")];
-  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
 
-  const currentTheme = () => root.getAttribute("data-theme") || (systemDark.matches ? "dark" : "light");
+  const currentTheme = () => (root.getAttribute("data-theme") === "light" ? "light" : "dark");
 
   function syncThemeButton() {
     const next = currentTheme() === "dark" ? "light" : "dark";
     themeBtns.forEach((b) => {
-      b.textContent = next === "dark" ? "Dark" : "Light";
+      if (!b.classList.contains("icon-btn")) b.textContent = next === "dark" ? "Dark" : "Light";
       b.setAttribute("aria-label", `Switch to ${next} theme`);
     });
-    const meta = document.querySelectorAll('meta[name="theme-color"]');
-    meta.forEach((m) => {
-      if (root.hasAttribute("data-theme")) m.setAttribute("content", currentTheme() === "dark" ? "#10161f" : "#eef1f4");
-    });
+    document
+      .querySelectorAll('meta[name="theme-color"]')
+      .forEach((m) => m.setAttribute("content", currentTheme() === "dark" ? "#08090d" : "#f5f6fa"));
   }
 
   function toggleTheme() {
@@ -34,7 +32,6 @@
   }
 
   themeBtns.forEach((b) => b.addEventListener("click", toggleTheme));
-  systemDark.addEventListener?.("change", syncThemeButton);
   syncThemeButton();
 
   // ---- case studies: project tiles open a dialog; #case-name links open it directly ----
@@ -161,5 +158,56 @@
       { rootMargin: "-20% 0px -60% 0px" }
     );
     sections.forEach((s) => io.observe(s));
+  }
+
+  // Scroll progress bar under the header.
+  const bar = document.getElementById("progress");
+  // Experience timeline: the line fills as you read, and each job's node lights up.
+  const career = document.getElementById("career");
+  const jobs = career ? [...career.querySelectorAll(".job")] : [];
+  let ticking = false;
+  const onFrame = () => {
+    ticking = false;
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    if (bar) bar.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+    if (career) {
+      const r = career.getBoundingClientRect();
+      const mark = window.innerHeight * 0.6;
+      const p = Math.max(0, Math.min(1, (mark - r.top) / r.height));
+      career.style.setProperty("--p", p.toFixed(4));
+      jobs.forEach((j) => j.classList.toggle("lit", j.getBoundingClientRect().top + 28 < mark));
+    }
+  };
+  const queue = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(onFrame);
+    }
+  };
+  window.addEventListener("scroll", queue, { passive: true });
+  window.addEventListener("resize", queue);
+  onFrame();
+
+  // Reveal sections as they scroll into view.
+  const reveals = [...document.querySelectorAll(".reveal")];
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    // stagger siblings that enter together
+    const rio = new IntersectionObserver(
+      (entries) => {
+        let i = 0;
+        entries
+          .filter((e) => e.isIntersecting)
+          .forEach((e) => {
+            e.target.style.setProperty("--d", `${Math.min(i++, 5) * 70}ms`);
+            e.target.classList.add("in");
+            rio.unobserve(e.target);
+          });
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 }
+    );
+    reveals.forEach((el) => rio.observe(el));
+  } else {
+    reveals.forEach((el) => el.classList.add("in"));
   }
 })();
